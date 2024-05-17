@@ -9,8 +9,6 @@ class AuthController {
         try {
             var user;
             const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            console.log(regex.test(username))
-            
             if (regex.test(username)) {
                 user = await db.User.findOne({ where: { email: username, active: 1 } });
             } else {
@@ -36,19 +34,18 @@ class AuthController {
     static async verifyToken(req) {
         return new Promise((resolve, reject) => {
             const cookies = req.cookies;
-            console.log(cookies)
             if (cookies === undefined) {
-                resolve(false);
+                resolve({valid: false});
             }
     
             const token = req.cookies.token;
     
             jwt.verify(token, privateKey, (err, decoded) => {
                 if (err) {
-                    resolve(false);
+                    resolve({valid: false});
                 }
-                req.email = decoded.email;
-                resolve(true);
+                const email = decoded.email;
+                resolve({valid: true, email: email});
             });
         });
     }

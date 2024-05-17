@@ -6,16 +6,17 @@ class AccountController {
         const auth = AuthController.verifyToken(req);
         if (auth) {
             const { username, name, email, password, userIcon, phonenum, countryFrom } = req.body;
-            const alreadyCreated = await db.User.findOne({ where: { email: email } });
-            if (alreadyCreated) {
-                return res.status(400).json({ title: "User Exists", message: 'An user with the same email already exists' });
+            const alreadyCreatedEmail = await db.User.findOne({ where: { email: email } });
+            const alreadyCreatedUsername = await db.User.findOne({ where: { username: username } });
+            if (alreadyCreatedEmail || alreadyCreatedUsername) {
+                return res.status(400).json({ title: "User Exists", message: 'An user with the same email or username already exists' });
             }
             try {
                 const newUser = await db.User.create({
                     username: username,
                     name: name,
                     email: email,
-                    password: password,
+                    password: atob(password),
                     userIcon: userIcon,
                     phonenum: phonenum,
                     countryFrom: countryFrom
@@ -32,19 +33,52 @@ class AccountController {
 
     static async deleteAccount(req, res) {
         try {
-            const auth = await AuthController.verifyToken(req);
-            // console.log(req.cookies['token']);
-            if (auth) {
-                const { email } = req.body;
+            const { valid, email } = await AuthController.verifyToken(req);
+            if (valid) {
+                
                 const user = await db.User.findOne({ where: { email: email } });
                 if (!user) {
                     return res.status(404).json({ title: "User not found", message: 'The user you are trying to delete does not exist' });
                 }
                 try {
-                    // await db.User.destroy({ where: { email: email } });
+                    await db.User.destroy({ where: { email: email } });
                     return res.status(200).json({ title: "Account deleted", message: 'The account has been deleted' });
                 } catch (error) {
                     return res.status(500).json({ title: "Error deleting account", message: `There was an error deleting the account: ${error.message}` });
+                }
+            } else {
+                return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });
+            }
+        } catch (error) {
+            return res.status(500).json({ title: "Error", message: `An error occurred: ${error.message}` });
+        }
+    }
+
+    static async updateAccount(req, res) {
+        try {
+            const { valid, email } = await AuthController.verifyToken(req);
+            if (valid) {
+                const user = await db.User.findOne({ where: { email: email } });
+                if (!user) {
+                    return res.status(404).json({ title: "User not found", message: 'The user you are trying to update does not exist' });
+                }
+                const { username, name, password, userIcon, phonenum, countryFrom } = req.body;
+                const findUsername = await db.User.findOne({ where: { username: username } });
+                if (findUsername) {
+                    return res.status(404).json({ title: "Username taken", message: 'This username is already taken' });
+                }
+                try {
+                    await db.User.update({
+                        username: username,
+                        name: name,
+                        password: atob(password),
+                        userIcon: userIcon,
+                        phonenum: phonenum,
+                        countryFrom: countryFrom
+                    }, { where: { email: email } });
+                    return res.status(200).json({ title: "Account updated", message: 'The account has been updated' });
+                } catch (error) {
+                    return res.status(500).json({ title: "Error updating account", message: `There was an error updating the account: ${error.message}` });
                 }
             } else {
                 return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });

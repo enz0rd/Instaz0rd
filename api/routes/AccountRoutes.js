@@ -6,5 +6,6 @@ router.use(cookieParser());
 
 router.post('/createAccount', AccountController.createAccount);
 router.post('/deleteAccount', AccountController.deleteAccount);
+router.patch('/updateAccount', AccountController.updateAccount);
 
 module.exports = router;
