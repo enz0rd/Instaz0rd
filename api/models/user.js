@@ -54,5 +54,13 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
   });
+
+  User.associate = (models) => {
+    User.belongsTo(models.Country, {
+      foreignKey: 'countryFrom',
+      as: 'country',  // Alias utilizado na consulta
+    });
+  };
+  
   return User;
 };

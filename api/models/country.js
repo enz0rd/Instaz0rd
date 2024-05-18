@@ -25,5 +25,13 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Country',
   });
+
+  Country.associate = (models) => {
+    Country.hasMany(models.User, {
+      foreignKey: 'countryFrom',
+      as: 'users',  // Alias reverso, se necessário
+    });
+  };
+  
   return Country;
 };

@@ -13,11 +13,11 @@ export function SelectBox({ data = [] }) {
   const [value, setValue] = React.useState("");
 
   return (
-    <Select>
-      <SelectTrigger className="w-[20rem]">
+    <Select className="bg-slate-950 dark:bg-white text-slate-50">
+      <SelectTrigger>
         <SelectValue placeholder="Select..." />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="bg-slate-950 dark:bg-white text-slate-50">
         {data.map((item) => (
           <SelectItem value={(item.value)}>{(item.label)}</SelectItem>
         ))}

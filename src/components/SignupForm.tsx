@@ -93,7 +93,7 @@ export default function LoginForm() {
         message: res.data.message + ". Redirecting...",
         isVisible: true
       });
-      setTimeout(() => {window.location.href='/login'}, 3000);
+      setTimeout(() => {window.location.href='/signin'}, 3000);
     })
     .catch((err) => {
       setAlert({
@@ -107,7 +107,7 @@ export default function LoginForm() {
     <div>
       <MessageAlert title={alert.title} message={alert.message} isVisible={alert.isVisible} />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-[20rem] flex-col gap-2">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-100 flex-col gap-2">
           <FormField
             control={form.control}
             name="email"
@@ -184,7 +184,7 @@ export default function LoginForm() {
               </FormItem>
             )}
           />
-          <Button type="submit">Create Account</Button>
+          <Button className="bg-slate-50 text-slate-900 hover:text-slate-50" type="submit">Create Account</Button>
         </form>
       </Form>
     </div>

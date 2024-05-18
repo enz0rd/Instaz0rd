@@ -1,10 +1,24 @@
+import Header from "@/components/Header";
+
+export const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
 export default function Home() {
-    if(!document.cookie.token || document.cookie.token === 'undefined' || document.cookie.token === null) {
+    // Obtém o valor do cookie 'token'
+    const token = getCookie('token');
+    
+    // Verifica se o token é inválido ou não existe
+    if(!token || token === 'undefined' || token === null) {
         window.location.href = '/signin';
-        return;
+        return null;
     }
     
     return (
-        <div>testasdasdaaaaasde</div>
+        <div className="bg-zinc-950 dark:bg-white text-slate-50">
+            <Header />
+        </div>
     )
 }

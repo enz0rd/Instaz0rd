@@ -14,21 +14,34 @@ class AuthController {
             } else {
                 user = await db.User.findOne({ where: { username: username, active: 1 } });
             }
-
+            
             if (!user || user.password !== atob(password)) {
                 return res.status(404).json({ title: 'Invalid credentials', message: "The user and password combination are incorrect or the user doesn't exists" });
             }
             
-            var token = jwt.sign({ email: user.email }, privateKey, { expiresIn: 86400 }); 
+            let userSend = {
+                id: user.id,
+                username: user.username,
+                name: user.name,
+                email: user.email,
+                userIcon: user.userIcon,
+            }            
 
-            return res.cookie('token', token, { httpOnly: true }).json({ title: 'Success', message: 'Logged in successfully' });
+            var token = jwt.sign({ email: user.email }, privateKey, { expiresIn: 86400 }); 
+            
+            console.log(userSend)
+
+            return res.status(200)
+                .cookie('token', token)
+                .cookie('user', userSend)
+                .json({ title: 'Success', message: 'Logged in successfully' });
         } catch (error) {
             return res.status(500).json({ message: error.message });
         }
     }
 
     static async logout(res) {
-        return res.clearCookie('token').json({ message: 'Logged out' });
+        return res.clearCookie('token').clearCookie('user').json({ message: 'Logged out' });
     }
 
     static async verifyToken(req) {

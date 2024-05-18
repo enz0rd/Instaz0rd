@@ -93,7 +93,7 @@ export default function LoginForm() {
                 </FormItem>
                 )}
             />
-            <Button type="submit">Login</Button>
+            <Button className="mt-2 bg-slate-50 text-slate-900 hover:text-slate-50" type="submit">Login</Button>
         </form>
         </Form>
     </div>
