@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.query(`INSERT INTO 'countries' ('id', 'nameCountry') VALUES
+    await queryInterface.sequelize.query(`INSERT INTO Countries (id, nameCountry) VALUES
     (1, 'Brazil'),
     (2, 'Afghanistan'),
     (3, 'Albania'),

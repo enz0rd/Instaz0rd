@@ -15,13 +15,13 @@ class AuthController {
                 user = await db.User.findOne({ where: { username: username, active: 1 } });
             }
 
-            if (!user || user.password !== password) {
+            if (!user || user.password !== atob(password)) {
                 return res.status(404).json({ title: 'Invalid credentials', message: "The user and password combination are incorrect or the user doesn't exists" });
             }
             
             var token = jwt.sign({ email: user.email }, privateKey, { expiresIn: 86400 }); 
 
-            return res.cookie('token', token, { httpOnly: true }).json({ message: 'Logged in' });
+            return res.cookie('token', token, { httpOnly: true }).json({ title: 'Success', message: 'Logged in successfully' });
         } catch (error) {
             return res.status(500).json({ message: error.message });
         }
