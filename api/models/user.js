@@ -60,13 +60,42 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'countryFrom',
       as: 'country',  // Alias utilizado na consulta
     });
-  };
-
-  User.associate = (models) => {
+  
     User.hasMany(models.Post, {
       foreignKey: 'userId',
     });
+  
+    // User.hasMany(models.CommentsPosts, {
+    //   foreignKey: 'userId',
+    // });
+  
+    User.hasMany(models.LikesPosts, {
+      foreignKey: 'userId',
+    });
+  
+    // User.hasMany(models.Friends, {
+    //   foreignKey: 'ownerId',
+    // });
+  
+    // User.hasMany(models.Friends, {
+    //   foreignKey: 'friendId',
+    // });
+  
+    // Adicione uma nova associação para notificações de usuário de e para
+    User.hasMany(models.Notification, {
+      foreignKey: 'userFromId',
+      as: 'userFrom', // Defina um alias para a associação
+    });
+  
+    User.hasMany(models.Notification, {
+      foreignKey: 'userToId',
+      as: 'userTo', // Defina um alias para a associação
+    });
   };
+  
+  
+  
+
   
   return User;
 };

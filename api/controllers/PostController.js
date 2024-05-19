@@ -123,7 +123,8 @@ class PostController {
                         }
                     ],
                     raw: true,
-                    nest: true
+                    nest: true,
+                    order: [['createdAt', 'DESC']]
                 });
                 
                 for (let post of posts) {
@@ -219,6 +220,15 @@ class PostController {
                     return res.status(200).json({ title: "Like removed", message: 'The like has been removed' });
                 } else {
                     const like = await db.LikesPosts.create({ userId: user.id, postId: postId });
+                    const post = await db.Post.findAll({
+                        attributes: ['userId'],
+                        where: { 
+                          id: postId // Supondo que 'postId' seja a variável que contém o ID do post
+                        }
+                      });
+                    if(user.id !== post[0].userId) {
+                        const sendNotification = await db.Notification.create({ userFromId: user.id, userToId: post[0].userId, notificationMessage: 'liked your post' });
+                    }
                     return res.status(200).json({ title: "Like added", message: 'The like has been added' });
                 }
             } catch (error) {

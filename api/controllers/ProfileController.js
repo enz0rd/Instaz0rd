@@ -16,11 +16,44 @@ class ProfileController {
     //         return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });
     //     }
     // }
+    static async getNotifications(req, res) {
+        const { valid, email } = await AuthController.verifyToken(req);
+        if (valid) {
+            const user = await db.User.findOne({ where: { email: email } });
+            const userId = user.id;
+            const notifications = await db.Notification.findAll(
+                { 
+                    where: { 
+                        userToId: userId 
+                    },
+                    order: [['createdAt', 'DESC']],
+                    include: [
+                        {
+                            model: db.User,
+                            attributes: ['username', 'userIcon'],
+                            as: 'userFrom',
+                        },
+                        {
+                            model: db.User,
+                            attributes: ['username', 'userIcon'],
+                            as: 'userTo',
+                        },
+                    ], 
+                });
+            
+                for (let notification of notifications) {
+                    notification.userFrom.userIcon = notification.userFrom.userIcon.split('/Instaz0rd')[1];
+                }
+
+            return res.status(200).json(notifications);
+        } else {
+            return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });
+        }
+    }
 
     static async getDetails(req, res) {
         const { valid, email } = await AuthController.verifyToken(req);
         if (valid) {
-            console.log(req.query.username);
             const user = await db.User.findOne({
                 attributes: { exclude: ['password'] },
                 where: { username: req.query.username }
@@ -30,7 +63,6 @@ class ProfileController {
             }
             user.userIcon = user.userIcon.split('Instaz0rd/')[1];
             
-            console.log(user);
             return res.status(200).json(user);
         } else {
             return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });

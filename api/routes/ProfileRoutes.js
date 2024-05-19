@@ -6,5 +6,6 @@ router.use(cookieParser());
 
 router.get('/u/details', ProfileController.getDetails);
 router.get('/u/search', ProfileController.searchUsers);
+router.get('/u/getNotifications', ProfileController.getNotifications);
 
 module.exports = router;
