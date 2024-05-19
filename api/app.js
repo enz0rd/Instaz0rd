@@ -2,6 +2,7 @@
 const express = require('express');
 const routes = require('./routes/index.js');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 const port = 9000;
@@ -13,8 +14,8 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'],
   }))
 app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb', parameterLimit: 50000}));
 
 routes(app);
 

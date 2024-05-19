@@ -1,0 +1,17 @@
+
+#CreatePostDialog {
+    width: 340px;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    flex-wrap: wrap;   
+}
+
+#img-display {
+    margin-bottom: 1rem;
+    width: 300px;
+    height: 300px;
+    border-radius: .5rem;
+}

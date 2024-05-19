@@ -18,23 +18,25 @@ class AuthController {
             if (!user || user.password !== atob(password)) {
                 return res.status(404).json({ title: 'Invalid credentials', message: "The user and password combination are incorrect or the user doesn't exists" });
             }
-            
+
             let userSend = {
                 id: user.id,
                 username: user.username,
                 name: user.name,
+                bio: user.bio,
                 email: user.email,
-                userIcon: user.userIcon,
+                phonenum: user.phonenum,
+                countryFrom: user.countryFrom,
+                since: user.createdAt,
             }            
+            console.log(userSend)
 
             var token = jwt.sign({ email: user.email }, privateKey, { expiresIn: 86400 }); 
             
-            console.log(userSend)
-
             return res.status(200)
                 .cookie('token', token)
                 .cookie('user', userSend)
-                .json({ title: 'Success', message: 'Logged in successfully' });
+                .json({ title: 'Success', message: 'Logged in successfully', userIcon: user.userIcon.split('/Instaz0rd')[1] });
         } catch (error) {
             return res.status(500).json({ message: error.message });
         }
@@ -62,7 +64,6 @@ class AuthController {
             });
         });
     }
-    
 }
 
 module.exports = AuthController;

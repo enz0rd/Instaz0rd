@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     postContent: {
-      type: DataTypes.BLOB,
+      type: DataTypes.STRING,
       allowNull: false
     },
     postDescription: DataTypes.STRING

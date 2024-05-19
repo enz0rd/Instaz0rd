@@ -1,0 +1,18 @@
+@media screen and (max-width: 800px) {
+  #container {
+    margin-top: 10rem;
+    display: flex;
+    flex-direction: column;
+    height: 70%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #form-items {
+    margin-top: 20rem;
+  }
+
+  #form-actions {
+    margin-bottom: 10rem !important;
+  }
+}

@@ -97,7 +97,7 @@ export default function LoginForm() {
     })
     .catch((err) => {
       setAlert({
-        title: "Error", 
+        title: "Error:", 
         message: err.response ? err.response.data.message : "An error occurred",
         isVisible: true
       });

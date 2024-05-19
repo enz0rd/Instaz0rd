@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     }, 
     password: DataTypes.STRING,
-    userIcon: DataTypes.BLOB,
+    userIcon: DataTypes.STRING,
     bio: DataTypes.STRING,
     phonenum: {
       type: DataTypes.STRING,

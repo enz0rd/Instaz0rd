@@ -5,5 +5,6 @@ const cookieParser = require('cookie-parser');
 router.use(cookieParser());
 
 router.get('/utils/countries', UtilsController.getCountries);
+router.get('/api/getImages', UtilsController.getImages);
 
 module.exports = router;

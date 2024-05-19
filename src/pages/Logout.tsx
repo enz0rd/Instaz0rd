@@ -10,6 +10,9 @@ export default function Logout() {
 
         // Remove o cookie 'token'
         deleteCookie('token');
+        deleteCookie('user');
+
+        localStorage.clear();
 
         // Redireciona para a página de login ou inicial
         setTimeout(() => { window.location.href = '/signin'}, 1000);

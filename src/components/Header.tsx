@@ -1,4 +1,6 @@
 import MenuDrawer from "@/components/MenuDrawer";
+import SearchBar from "./SearchBar";
+
 
 export default function Header() {
     return (
@@ -6,9 +8,10 @@ export default function Header() {
         border-b-[.025em] rounded-lg p-3 flex flex-row gap-4 justify-around items-center 
         align-middle h-[4rem]">
             <a href="/">
-                <img src="./src/assets/logo-iz0.png" className="h-8 w-8" alt="iz0 logo" />
+                <img src="../src/assets/logo-iz0.png" className="h-8 w-8" alt="iz0 logo" />
             </a>
-                <MenuDrawer></MenuDrawer>
+            <SearchBar />
+            <MenuDrawer></MenuDrawer>
         </div>
     )
 }

@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     messageText: DataTypes.STRING,
-    messageOther: DataTypes.BLOB,
+    messageOther: DataTypes.STRING,
     dateSent: DataTypes.DATE
   }, {
     sequelize,

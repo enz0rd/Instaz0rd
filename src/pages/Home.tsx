@@ -7,6 +7,7 @@ export const getCookie = (name) => {
 }
 
 export default function Home() {
+    document.title = "Home - Instaz0rd";
     // Obtém o valor do cookie 'token'
     const token = getCookie('token');
     

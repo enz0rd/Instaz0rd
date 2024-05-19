@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     reelContent: {
-      type: DataTypes.BLOB,
+      type: DataTypes.STRING,
       allowNull: false
     },
     reelDescription: DataTypes.STRING

@@ -24,6 +24,10 @@ const formSchema = z.object({
       }),
   })
 
+async function decompressBase64(compressedBase64String: string): Promise<string> {
+    return pako.inflate(compressedBase64String, { to: 'string' });
+}
+
 export default function LoginForm() {
     const [alert, setAlert] = useState({ title: '', message: '', isVisible: false });
 
@@ -46,7 +50,7 @@ export default function LoginForm() {
         }
     })
     .then((res) => {
-        console.log(res)
+        localStorage.setItem('userIcon', res.data.userIcon)
         setAlert({
             title: res.data.title, 
             message: res.data.message + ". Redirecting...",
