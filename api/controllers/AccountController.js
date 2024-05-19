@@ -8,14 +8,14 @@ class AccountController {
     static async createAccount(req, res) {
         const auth = AuthController.verifyToken(req);
         if (auth) {
-            const { username, name, email, password, userIcon, phonenum, countryFrom } = req.body;
+            const { username, name, email, password, phonenum, countryFrom } = req.body;
             const alreadyCreatedEmail = await db.User.findOne({ where: { email: email } });
             const alreadyCreatedUsername = await db.User.findOne({ where: { username: username } });
             if (alreadyCreatedEmail || alreadyCreatedUsername) {
                 return res.status(400).json({ title: "User Exists", message: 'An user with the same email or username already exists' });
             }
 
-            const imagePath = path.join('..', 'assets', 'user-default.png'); // Altere para o caminho correto
+            const imagePath = path.join(__dirname,'..', 'assets', 'user-default.png'); // Altere para o caminho correto
 
             try {
                 const newUser = await db.User.create({

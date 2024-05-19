@@ -202,7 +202,7 @@ export default function CreatePost() {
                         <h2 className="font-bold text-xl mt-3">Other</h2>
                         <div className="flex flex-col gap-3 mt-3">
                             <Label htmlFor="select-file">Profile Image</Label>
-                            <div className="flex flex-row items-center justify-between align-">
+                            <div className="flex flex-row items-center truncate justify-between align-">
                                 <SelectFilePost onFileSelect={handleFileSelect} />
                                 <SaveProfileIcon validImage={validImage} fileInput={fileInput} />
                             </div>

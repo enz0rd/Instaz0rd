@@ -29,7 +29,7 @@ export default function SelectFilePost({ onFileSelect }: { onFileSelect: (file: 
         reader.onload = function(e) {
             if (imgDisplay && e.target) {
                 imgDisplay.src = e.target.result as string;
-                if (labelFile) labelFile.innerText = file.name;
+                if (labelFile) labelFile.innerText = file.name.substring(0, 20) + '...';
                 setValidImage(true);
             }
         };
@@ -40,9 +40,9 @@ export default function SelectFilePost({ onFileSelect }: { onFileSelect: (file: 
     }
 
     return (
-        <div className="border-[.025em] rounded-lg p-2 truncate">
-            <Label className="cursor-pointer w-[100%] h-[2rem]" id="label-file" htmlFor="file">Select a file</Label>
-            <input ref={fileInputRef} id="file" onChange={onSelectFile} name="file" className="hidden" type="file" />
+        <div className="border-[.025em] rounded-lg p-2">
+            <Label className="cursor-pointer w-[90%] overflow-hidden text-ellipsis h-[2rem]" id="label-file" htmlFor="file">Select a file</Label>
+            <input ref={fileInputRef} id="file" onChange={onSelectFile} name="file" className="overflow-hidden text-ellipsis hidden" type="file" />
         </div>
     );
 }

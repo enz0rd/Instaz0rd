@@ -1,0 +1,28 @@
+@media screen and (max-width: 500px) {
+    #display-posts h1 {
+        width: 90%;
+    }
+
+    #display-posts #scrollareaPosts {
+        width: 90%;
+    }
+
+    #postDialog {
+        width: 90%;
+        border-radius: 1rem;
+    }
+
+    #postContent {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+    }
+
+    #postContent img {
+        width: 100%;
+        max-width: fit-content;
+        border-radius: 1rem;
+    }
+}

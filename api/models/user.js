@@ -61,6 +61,12 @@ module.exports = (sequelize, DataTypes) => {
       as: 'country',  // Alias utilizado na consulta
     });
   };
+
+  User.associate = (models) => {
+    User.hasMany(models.Post, {
+      foreignKey: 'userId',
+    });
+  };
   
   return User;
 };

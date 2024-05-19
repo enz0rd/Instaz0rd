@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 
 // Função para converter um arquivo em um array de bytes
 async function fileToBytes(file: File): Promise<Uint8Array> {
@@ -21,8 +22,6 @@ async function fileToBytes(file: File): Promise<Uint8Array> {
 }
 
 export default function PostButton({ validImage, fileInput }) {
-    const [imageBytes, setImageBytes] = useState<Uint8Array | null>(null);
-
     async function Post() {
         const description = document.getElementById('description') as HTMLTextAreaElement;
         console.log(description.value);
@@ -39,49 +38,40 @@ export default function PostButton({ validImage, fileInput }) {
             }
         }
 
-        // Convert file to bytes
-        try {
-            const bytes = await fileToBytes(fileInput);
-            setImageBytes(bytes);
-            const base64String = btoa(String.fromCharCode.apply(null, bytes));
-            console.log('Base64 String:', base64String);
-        } catch (error) {
-            console.error('Error converting file to bytes:', error);
-            alert('Failed to convert file to bytes. Please try again.');
-            return;
-        }
-
         // Prepare form data
         const formData = new FormData();
-        formData.append('description', description.value);
-        formData.append('image', fileInput);
+        formData.append('postDescription', description.value);
+        formData.append('postContent', fileInput);
 
-        // Append image bytes to form data
-        if (imageBytes) {
-            formData.append('imageBytes', new Blob([imageBytes], { type: 'application/octet-stream' }));
-        }
-
+        document.getElementById('post-button').classList.add('cursor-not-allowed', 'opacity-50');
+        document.getElementById('post-button').setAttribute('disabled', 'true');
         try {
-            // Send form data to the server using fetch or any other method
-            // const response = await fetch('URL_TO_YOUR_SERVER_ENDPOINT', {
-            //     method: 'POST',
-            //     body: formData
-            // });
+            await axios.post('http://localhost:9000/u/createPost', formData, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            }).then((response) => {
+                alert('Post submitted successfully');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 500);
+            })
+            .catch((error) => {
+                console.error('Error submitting post:', error.response.data);
+                alert('Failed to submit post. Please try again later.');
+                document.getElementById('post-button').classList.remove('cursor-not-allowed', 'opacity-50');
 
-            // // Handle response from the server
-            // if (response.ok) {
-            //     alert('Post submitted successfully!');
-            //     // Optionally, clear the form fields or do any other actions after successful submission
-            // } else {
-            //     alert('Failed to submit post. Please try again later.');
-            // }
+            });
         } catch (error) {
             console.error('Error submitting post:', error);
             alert('Failed to submit post. Please try again later.');
+            document.getElementById('post-button').classList.remove('cursor-not-allowed', 'opacity-50');
+
         }
     }
 
     return (
-        <Button onClick={Post} className="bg-white text-zinc-900 hover:bg-zinc-950 hover:border-2 hover:text-zinc-50">Post</Button>
+        <Button onClick={Post} id="post-button" className="bg-white text-zinc-900 hover:bg-zinc-950 hover:border-2 hover:text-zinc-50">Post</Button>
     )
 }

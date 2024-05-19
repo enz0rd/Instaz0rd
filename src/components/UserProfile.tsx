@@ -2,16 +2,17 @@ import { useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import axios from "axios";
 import { getCookie } from "@/pages/Home";
+import '@/styles/UserProfile.css';
 
 export default function UserProfile() {
-    
+    const currentUrl = window.location.href;
+    const parts = currentUrl.split('/');
+    const username = parts[4];
     
     useEffect(() => {
-        const currentUrl = window.location.href;
-        const parts = currentUrl.split('/');
-        const username = parts[4];
         const encodedUsername = encodeURIComponent(username);
-        axios.get(`http://localhost:9000/u/details?user=${encodedUsername}`, {
+        console.log("Encoded username:", encodedUsername)
+        axios.get(`http://localhost:9000/u/details?username=${encodedUsername}`, {
             withCredentials: true,
             headers: {
                 'Content-Type': 'application/json',
@@ -19,7 +20,7 @@ export default function UserProfile() {
         })
         .then((response) => {
             const userData = response.data;
-            document.title = `${userData.username} - Instaz0rd`;
+            document.title = `@${userData.username} - Instaz0rd`;
             document.getElementById('user-name').innerText = userData.name;
             document.getElementById('user-username').innerText = `@${userData.username}`;
             document.getElementById('user-since').innerText = `User since ${new Date(userData.createdAt).toLocaleDateString()}`;

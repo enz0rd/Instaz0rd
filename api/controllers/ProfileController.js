@@ -20,13 +20,15 @@ class ProfileController {
     static async getDetails(req, res) {
         const { valid, email } = await AuthController.verifyToken(req);
         if (valid) {
-            console.log(req.query.user);
+            console.log(req.query.username);
             const user = await db.User.findOne({
                 attributes: { exclude: ['password'] },
-                where: { username: req.query.user }
+                where: { username: req.query.username }
             });
-
-            user.dataValues.userIcon = user.dataValues.userIcon.split('Instaz0rd/')[1];
+            if (user == null) {
+                return res.status(404).json({ title: "User not found", message: 'The user you are trying to get does not exist' });
+            }
+            user.userIcon = user.userIcon.split('Instaz0rd/')[1];
             
             console.log(user);
             return res.status(200).json(user);
