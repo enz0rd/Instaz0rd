@@ -14,6 +14,7 @@ export default function PostUnitActions({ postId, likes, comments}) {
                     const likeIcon = document.getElementById('likePost')
                 if(likeIcon?.classList.contains('fill-red-600')) {
                     likeIcon.classList.remove('fill-red-600');
+                    likeIcon.classList.add('fill-white');
                     console.log("Like removed:", res.data);
                     setCurrentLikes(currentLikes - 1);
                 } else {

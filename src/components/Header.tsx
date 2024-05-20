@@ -1,5 +1,6 @@
 import MenuDrawer from "@/components/MenuDrawer";
 import SearchBar from "./SearchBar";
+import NotificationIcon from "./NotificationIcon";
 
 
 export default function Header() {
@@ -11,7 +12,10 @@ export default function Header() {
                 <img src="../src/assets/logo-iz0.png" className="h-8 w-8" alt="iz0 logo" />
             </a>
             <SearchBar />
-            <MenuDrawer></MenuDrawer>
+            <div className="flex flex-row gap-5">
+                <NotificationIcon />
+                <MenuDrawer></MenuDrawer>
+            </div>
         </div>
     )
 }
