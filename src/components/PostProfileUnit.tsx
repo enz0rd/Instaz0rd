@@ -18,7 +18,7 @@ export default function PostProfileUnit({ postId, img, description, user, date, 
     const newDate = new Date(date).toLocaleDateString();
 
     return (
-        <div className="relative border-[.025em] border-zinc-700 rounded-lg w-[33%] bg-zinc-950 cursor-pointer group">
+        <div className="relative border-[.025em] col-span-1 border-zinc-700 rounded-lg w-[100%] aspect-square bg-zinc-950 cursor-pointer group">
             <img
                 src={img}
                 alt=""

@@ -97,7 +97,7 @@ export default function NotificationIcon() {
                 <div className="grid grid-cols-4">
                   <h4 className="font-bold leading-none col-span-3 text-white">{notification.title}</h4>
                   <small className="text-white col-span-1 text-[.55rem] justify-self-end">{formatTimeAgo(notification.createdAt)}</small>
-                  <p className="text-sm col-span-4 text-zinc-200 text-muted-foreground">{notification.userFrom.username + " " + notification.notificationMessage}</p>
+                  <p className="text-sm col-span-4 text-zinc-200 text-muted-foreground">@{notification.userFrom.username + " " + notification.notificationMessage}</p>
                 </div>
               </a>
             ))

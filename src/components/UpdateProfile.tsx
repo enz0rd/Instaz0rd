@@ -141,7 +141,7 @@ export default function CreatePost() {
                     <DialogHeader>
                         <DialogTitle className="text-lg">Update Profile</DialogTitle>
                     </DialogHeader>
-                    <img alt="User Icon" id="img-display" src={userImage} className="border rounded-full bg-zinc-900" />
+                    <img alt="User Icon" id="img-display" src={userImage} className="border object-cover rounded-full bg-zinc-900" />
                     <ScrollArea className="flex border-t-[.025em] rounded-t-[.5rem] p-[.5rem] h-[15rem] w-[100%] pr-4">
                         <Form {...form}>
                             <h2 className="font-bold text-xl mt-3">Profile details</h2>

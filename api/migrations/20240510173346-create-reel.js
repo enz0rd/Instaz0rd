@@ -18,7 +18,7 @@ module.exports = {
         allowNull: false
       },
       reelContent: {
-        type: Sequelize.BLOB,
+        type: Sequelize.STRING,
         allowNull: false
       },
       reelDescription: {

@@ -17,7 +17,7 @@ module.exports = {
         }
       },
       postContent: {
-        type: Sequelize.BLOB,
+        type: Sequelize.STRING,
         allowNull: false
       },
       postDescription: {

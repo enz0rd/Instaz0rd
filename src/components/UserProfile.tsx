@@ -11,7 +11,6 @@ export default function UserProfile() {
     
     useEffect(() => {
         const encodedUsername = encodeURIComponent(username);
-        console.log("Encoded username:", encodedUsername)
         axios.get(`http://localhost:9000/u/details?username=${encodedUsername}`, {
             withCredentials: true,
             headers: {
@@ -20,10 +19,13 @@ export default function UserProfile() {
         })
         .then((response) => {
             const userData = response.data;
+            console.log("User data:", userData.id)
             document.title = `@${userData.username} - Instaz0rd`;
             document.getElementById('user-name').innerText = userData.name;
             document.getElementById('user-username').innerText = `@${userData.username}`;
-            document.getElementById('user-since').innerText = `User since ${new Date(userData.createdAt).toLocaleDateString()}`;
+            document.getElementById('user-since').innerText = `since ${new Date(userData.createdAt).toLocaleDateString()}`;
+            document.getElementById('user-location').innerText = "📍 " + userData.country.nameCountry || '';
+            document.getElementById('user-bio').innerText = userData.bio || '';
             
             const userIconPath = userData.userIcon || '/api/src/assets/user-default.png';
             axios.get(`http://localhost:9000/api/getImages?path=${encodeURIComponent(userIconPath)}`, {
@@ -40,6 +42,7 @@ export default function UserProfile() {
             });
         })
         .catch((error) => {
+            console.log(error)
             document.title = `User not found - Instaz0rd`;
             document.getElementById('user-profile').classList.add('hidden');
             document.getElementById('not-found').classList.remove('hidden');
@@ -48,13 +51,17 @@ export default function UserProfile() {
     });
     
     return (
-        <div>
-            <div id="user-profile" className="mt-[7rem] flex flex-row gap-10 justify-center items-center">
-                <img id='userProfilePic' alt="user profile pic" className="w-[10rem] rounded-full" />
-                <div className="flex flex-col">
+        <div className="justify-center mx-auto flex">
+            <div id="user-profile" className="mt-[7rem] grid grid-cols-4 gap-5 items-center w-[60%]">
+                <img id='userProfilePic' alt="user profile pic" className="col-start-2 col-span-1 w-[10rem] h-[10rem] object-cover rounded-full" />
+                <div className="flex flex-col col-span-2">
                     <h1 className="text-3xl font-bold" id="user-name"></h1>
+                    <small id="user-since"></small>
                     <span id="user-username"></span>        
-                    <span className="text-lg" id="user-since"></span>
+                    <span id="user-location"></span>
+                </div>
+                <div className="col-span-4">
+                    <p id="user-bio" className=" mt-2"></p>
                 </div>
             </div>
             <div id='not-found' className="absolute top-[50%] left-0 right-0 ml-auto mr-auto w-[20rem] hidden">

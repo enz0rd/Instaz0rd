@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { PopoverTrigger, PopoverContent, Popover } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import axios from "axios";
 
 export default function SearchBar() {
     const [searchText, setSearchText] = useState("");
@@ -37,14 +38,13 @@ export default function SearchBar() {
         try {
             const response = await fetch(`http://localhost:9000/u/search?q=${query}`);
             const data = await response.json();
-            const resultsWithBlob = data.map(user => {
+            const resultsWithBlob = await Promise.all(data.map(async (user) => {
                 if (user.userIcon) {
-                    // Converte o buffer de imagem para Blob e cria um URL de objeto
-                    const blob = new Blob([new Uint8Array(user.userIcon.data)], { type: 'image/png' });
-                    user.userIcon = URL.createObjectURL(blob);
+                    const imgResponse = await axios.get(`http://localhost:9000/api/getImages?path=${encodeURIComponent(user.userIcon)}`, { withCredentials: true, responseType: "blob"});
+                    user.imgResp = URL.createObjectURL(imgResponse.data);
                 }
                 return user;
-            });
+            }));
             setResults(resultsWithBlob);
         } catch (error) {
             console.error("Error fetching search results:", error);
@@ -77,7 +77,7 @@ export default function SearchBar() {
                         <div className="space-y-1">
                             {results.map((result, index) => (
                                 <a href={`/u/${result.username}`} key={index} className="flex cursor-pointer items-center rounded-md px-3 py-2 transition ease-in-out duration-150 hover:bg-zinc-900 dark:hover:bg-zinc-700">
-                                    <img src={result.userIcon} alt={result.username} className="h-5 w-5 mr-2 rounded-full" />
+                                    <img src={result.imgResp} alt={result.username} className="h-5 w-5 mr-2 rounded-full" />
                                     <span className="text-sm text-zinc-50 dark:text-zinc-300">{result.username}</span>
                                 </a>
                             ))}

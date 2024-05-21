@@ -29,14 +29,13 @@ class AuthController {
                 countryFrom: user.countryFrom,
                 since: user.createdAt,
             }            
-            console.log(userSend)
 
             var token = jwt.sign({ email: user.email }, privateKey, { expiresIn: 86400 }); 
             
             return res.status(200)
                 .cookie('token', token)
                 .cookie('user', userSend)
-                .json({ title: 'Success', message: 'Logged in successfully', userIcon: user.userIcon.split('/Instaz0rd')[1] });
+                .json({ title: 'Success', message: 'Logged in successfully', userIcon: user.dataValues.userIcon.split('Instaz0rd')[1] });
         } catch (error) {
             return res.status(500).json({ message: error.message });
         }

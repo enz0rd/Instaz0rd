@@ -27,7 +27,7 @@ module.exports = {
         allowNull: false
       },
       userIcon: {
-        type: Sequelize.BLOB
+        type: Sequelize.STRING
       },
       bio: {
         type: Sequelize.STRING

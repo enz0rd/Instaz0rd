@@ -18,7 +18,7 @@ module.exports = {
         allowNull: false
       },
       storyContent: {
-        type: Sequelize.BLOB,
+        type: Sequelize.STRING,
         allowNull: false
       },
       createdAt: {

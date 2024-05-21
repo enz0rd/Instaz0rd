@@ -14,6 +14,8 @@ router.use(cookieParser());
 router.post('/u/createPost', upload.single('postContent'), PostController.createPost);
 router.get('/u/posts', PostController.getUserPosts);
 router.post('/u/likePost', PostController.likePost);
+router.get('/posts/getComments', PostController.getComments);
+router.post('/posts/createComment', PostController.createComment);
 router.get('/posts/fy', PostController.getPostsFY);
 router.get('/posts/friends', PostController.getPostsFriends);
 

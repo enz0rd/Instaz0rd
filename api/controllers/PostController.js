@@ -132,8 +132,8 @@ class PostController {
                     const comments = await db.CommentsPosts.findAll({ where: { postId: post.id } });
                     post.likes = likes.length;
                     post.comments = comments.length;
-                    post.User.userIcon = post.User.userIcon.split('/Instaz0rd')[1];
-                    post.postContent = post.postContent.split('/Instaz0rd')[1];
+                    post.User.userIcon = post.User.userIcon.split('Instaz0rd')[1];
+                    post.postContent = post.postContent.split('Instaz0rd')[1];
                 }
                 return res.status(200).json(posts);
             } catch (error) {
@@ -234,6 +234,59 @@ class PostController {
             } catch (error) {
                 console.error('Error liking post:', error);
                 return res.status(500).json({ title: "Server error", message: 'An error occurred while liking the post: '+error.message });
+            }
+        } else {
+            return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });
+        }
+    }
+
+    static async getComments(req, res) {
+        const { valid, email } = await AuthController.verifyToken(req);
+        if(valid) {
+            try {
+                const comments = await db.CommentsPosts.findAll({ 
+                    where: { 
+                        postId: req.query.postId 
+                    },
+                    include: [
+                        {
+                            model: db.User,
+                            attributes: ['username', 'userIcon'],
+                            as: 'commentsUser'
+                        }
+                    ], 
+                });
+
+                for(let comment of comments) {
+                    console.log(comment)
+                    comment.commentsUser.userIcon = comment.commentsUser.userIcon.split('Instaz0rd')[1];
+                }
+                return res.status(200).json(comments);
+            } catch (error) {
+                console.error('Error getting comments:', error);
+                return res.status(500).json({ title: "Server error", message: 'An error occurred while getting comments' });
+            }
+        } else {
+            return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });
+        }
+    }
+
+    static async createComment(req, res) {
+        const { valid, email } = await AuthController.verifyToken(req);
+        if(valid) {
+            try {
+                const user = await db.User.findOne({ where: { email: email } });
+                if (!user) {
+                    return res.status(404).json({ title: "User not found", message: 'The user you are trying to comment as does not exist' });
+                }
+
+                const { postId, comment } = req.body;
+
+                const newComment = await db.CommentsPosts.create({ userId: user.id, postId: postId, comment: comment });
+                return res.status(201).json({ title: "Comment created", message: 'The comment has been created' });
+            } catch (error) {
+                console.error('Error creating comment:', error);
+                return res.status(500).json({ title: "Server error", message: 'An error occurred while creating the comment' });
             }
         } else {
             return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });

@@ -69,15 +69,12 @@ class AccountController {
                     return res.status(404).json({ title: "User not found", message: 'The user you are trying to update does not exist' });
                 }
                 
-                const { username, name, password, phonenum, countryFrom } = req.body;
-
-                console.log(req.file)
+                const { username, name, password, bio, phonenum, countryFrom } = req.body;
 
                 if (req.file) {
                     let relativeUploadDir;
                     try {
                         relativeUploadDir = path.join(__dirname, '../uploads/users/', `${user.id}`, "Icon");
-                        console.log(relativeUploadDir)
                         fs.mkdirSync(relativeUploadDir, { recursive: true });
                     } catch (error) {
                         return res.status(500).json({ title: "Error creating directory", message: `There was an error creating the directory: ${error.message}` });
@@ -107,7 +104,7 @@ class AccountController {
                                 userIcon: fileUrl
                             }, { where: { email: email } });
 
-                            return res.status(200).json({ title: "Account updated", message: 'The account has been updated', imageDir: fileUrl.split('/Instaz0rd')[1] });
+                            return res.status(200).json({ title: "Account updated", message: 'The account has been updated', imageDir: fileUrl.split('Instaz0rd')[1] });
                         } catch (error) {
                             return res.status(500).json({ title: "Error updating account", message: `There was an error updating the account: ${error.message}` });
                         }
@@ -117,7 +114,6 @@ class AccountController {
                 } else {
                     if (username) {
                         const userReq = await db.User.findOne({ where: { email: email, active: 1 } });
-                        console.log(userReq.id)
                         const findUsername = await db.User.findOne({ where: { username: username } });
                         if (findUsername && findUsername.id !== userReq.id) {
                             return res.status(409).json({ title: "Username taken", message: 'This username is already taken' });
@@ -129,6 +125,7 @@ class AccountController {
                             name: name ? name : user.name,
                             password: password ? atob(password) : user.password,
                             phonenum: phonenum ? phonenum : user.phonenum,
+                            bio: bio ? bio : user.bio,
                             countryFrom: countryFrom ? countryFrom : user.countryFrom
                         }, { where: { email: email } })
 

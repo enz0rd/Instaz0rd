@@ -27,7 +27,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       messageOther: {
-        type: Sequelize.BLOB
+        type: Sequelize.STRING
       },
       dateSent: {
         type: Sequelize.DATE
