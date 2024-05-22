@@ -53,7 +53,7 @@ export default function UserProfile() {
     return (
         <div className="justify-center mx-auto flex">
             <div id="user-profile" className="mt-[7rem] grid grid-cols-4 gap-5 items-center w-[60%]">
-                <img id='userProfilePic' alt="user profile pic" className="col-start-2 col-span-1 w-[10rem] h-[10rem] object-cover rounded-full" />
+                <img id='userProfilePic' alt="user profile pic" className="col-start-2 col-span-1 w-[10rem] h-[10rem] aspect-square object-cover rounded-full" />
                 <div className="flex flex-col col-span-2">
                     <h1 className="text-3xl font-bold" id="user-name"></h1>
                     <small id="user-since"></small>

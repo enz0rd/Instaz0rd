@@ -2,7 +2,7 @@ import { FaRegCommentAlt } from "react-icons/fa";
 import { AiFillLike } from "react-icons/ai";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogTitle, DialogHeader } from "@/components/ui/dialog";
+import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogTitle, DialogHeader, DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { ScrollArea } from "./ui/scroll-area";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -10,12 +10,16 @@ import { IoSend } from "react-icons/io5";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Skeleton } from "./ui/skeleton";
 import '@/styles/PostActions.css';
+import { Label } from "./ui/label";
+import { Copy } from "lucide-react"
 
-export default function PostUnitActions({ postId, likes, comments }) {
+export default function PostUnitActions({ postUserUsername,postId, likes, comments }) {
     const [currentLikes, setCurrentLikes] = useState(likes);
     const [currentComments, setCurrentComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [newComment, setNewComment] = useState("");
+
+    
 
     useEffect(() => {
         if (currentComments.length === 0) {
@@ -84,15 +88,17 @@ export default function PostUnitActions({ postId, likes, comments }) {
 
         try {
             const res = await axios.post(`http://localhost:9000/posts/createComment`, { postId, comment: newComment }, { withCredentials: true });
+            console.log(res.data)
             const newCommentData = {
-                ...res.data,
+                comment: res.data.comment,
                 createdAt: formatTimeAgo(res.data.createdAt),
                 User: {
-                    ...res.data.User,
-                    userIcon: `http://localhost:9000/api/getImages?path=${encodeURIComponent(res.data.User.userIcon)}`,
+                    username: res.data.userComment.username,
+                    userIcon: `http://localhost:9000/api/getImages?path=${encodeURIComponent(res.data.userComment.userIcon)}`,
                 },
             };
-            setCurrentComments([...currentComments, newCommentData]);
+            currentComments.push(newCommentData)
+            setCurrentComments(currentComments);
             setNewComment("");
         } catch (error) {
             console.error("Error creating comment:", error);
@@ -139,8 +145,8 @@ export default function PostUnitActions({ postId, likes, comments }) {
                                         <Avatar className="bg-zinc-950 border-2 w-[3rem] h-[3rem] aspect-square">
                                             <AvatarImage src={comment.User.userIcon} />
                                         </Avatar>
-                                        <div className="grid grid-cols-4">
-                                            <h4 className="font-bold leading-none col-span-3 text-white">{comment.User.username}</h4>
+                                        <div className="grid w-[100%] grid-cols-5">
+                                            <h4 className="font-bold leading-none col-span-4 text-white">{comment.User.username}</h4>
                                             <small className="text-white col-span-1 text-[.55rem] justify-self-end">{comment.createdAt}</small>
                                             <div className="text-sm col-span-4 text-zinc-200 text-muted-foreground">{comment.comment}</div>
                                         </div>
@@ -155,6 +161,38 @@ export default function PostUnitActions({ postId, likes, comments }) {
                             </Button>
                         </div>
                     </DialogDescription>
+                </DialogContent>
+            </Dialog>
+            <Dialog>
+                <DialogTrigger>
+                    <IoSend className="size-[1.5rem] hover:scale-[1.5] duration-300" />
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md bg-zinc-950">
+                    <DialogHeader>
+                    <DialogTitle>Share this post</DialogTitle>
+                    <DialogDescription>
+                        Anyone who has this link will be able to view this post.
+                    </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex items-center space-x-2">
+                    <div className="grid flex-1 gap-2">
+                        <Label htmlFor="link" className="sr-only">
+                        Link
+                        </Label>
+                        <Input
+                        id="link"
+                        defaultValue={`https://localhost:5174/u/${postUserUsername}/${postId}`}
+                        readOnly
+                        />
+                    </div>
+                    </div>
+                    <DialogFooter className="sm:justify-start">
+                    <DialogClose asChild>
+                        <Button type="button" variant="secondary">
+                        Close
+                        </Button>
+                    </DialogClose>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
         </div>

@@ -6,6 +6,8 @@ import Signin from './pages/Signin';
 import Signup from './pages/Signup';
 import Logout from './pages/Logout';
 import MyProfile from './pages/MyProfile';
+import NotFound from './pages/NotFound';
+import Post from './pages/Post';
 
 
 export default function App() {
@@ -17,7 +19,9 @@ export default function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/u/:username" element={<MyProfile />} />
-        {/* <Route component={NotFound} /> */}
+        <Route path="/u/:username/:postId" element={<Post />} />
+        <Route path="/404" element={<NotFound />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

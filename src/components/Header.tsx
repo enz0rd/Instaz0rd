@@ -1,6 +1,7 @@
 import MenuDrawer from "@/components/MenuDrawer";
 import SearchBar from "./SearchBar";
 import NotificationIcon from "./NotificationIcon";
+import image from '@/assets/logo-iz0.png';
 
 
 export default function Header() {
@@ -9,7 +10,7 @@ export default function Header() {
         border-b-[.025em] rounded-lg p-3 flex flex-row gap-4 justify-around items-center 
         align-middle h-[4rem]">
             <a href="/">
-                <img src="../src/assets/logo-iz0.png" className="h-8 w-8" alt="iz0 logo" />
+                <img src={image} className="h-8 w-8" alt="iz0 logo" />
             </a>
             <SearchBar />
             <div className="flex flex-row gap-5">

@@ -47,7 +47,7 @@ export default function PostProfileUnit({ postId, img, description, user, date, 
                                 <small>{newDate}</small>
                             </div>
                             <div className="items end mb-5 mt-4">
-                                <PostUnitActions postId={postId} likes={likes} comments={comments} />
+                                <PostUnitActions postUserUsername={user} postId={postId} likes={likes} comments={comments} />
                             </div>
                         </div>
                     </div>

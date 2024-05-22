@@ -13,6 +13,7 @@ router.use(cookieParser());
 
 router.post('/u/createPost', upload.single('postContent'), PostController.createPost);
 router.get('/u/posts', PostController.getUserPosts);
+router.get('/u/posts/details', PostController.getUserPostById);
 router.post('/u/likePost', PostController.likePost);
 router.get('/posts/getComments', PostController.getComments);
 router.post('/posts/createComment', PostController.createComment);

@@ -145,6 +145,70 @@ class PostController {
         }
     }
 
+    static async getUserPostById(req, res) {
+        const { valid, email } = await AuthController.verifyToken(req);
+        if (valid) {
+            try {
+                const user = await db.User.findAll({ 
+                    where: {
+                        username: { 
+                            [db.Sequelize.Op.or]: [req.query.username] 
+                        }
+                    },
+                    raw: true,
+                });
+
+                console.log(req.query)
+
+                if(user.length == 0) {
+                    return res.status(404).json({ title: "User not found", message: 'The user you are trying to get does not exist' });
+                }
+
+                const post = await db.Post.findOne({
+                    where: {
+                        id:{ 
+                            [db.Sequelize.Op.or]: [
+                                req.query.postId 
+                            ],
+                        userId:{
+                            [db.Sequelize.Op.or]: [
+                                user[0].id
+                            ]
+                        }
+                        }
+                    },
+                    include: [
+                        {
+                            model: db.User,
+                            attributes: ['username', 'userIcon']
+                        }
+                    ],
+                    raw: true,
+                    nest: true,
+                    order: [['createdAt', 'DESC']]
+                });
+                
+                if(post == null) {
+                    return res.status(404).json({ title: "Post not found", message: 'The post you are trying to get does not exist' });
+                }
+
+                const likes = await db.LikesPosts.findAll({ where: { postId: post.id } });
+                const comments = await db.CommentsPosts.findAll({ where: { postId: post.id } });
+                post.likes = likes.length;
+                post.comments = comments.length;
+                post.User.userIcon = post.User.userIcon.split('Instaz0rd')[1];
+                post.postContent = post.postContent.split('Instaz0rd')[1];
+
+                return res.status(200).json(post);
+            } catch (error) {
+                console.error('Error getting posts:', error);
+                return res.status(500).json({ title: "Server error", message: 'An error occurred while getting posts' });
+            }
+        } else {
+            return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });
+        }
+    }
+
     static async createPost(req, res) {
         const { valid, email } = await AuthController.verifyToken(req);
         if (valid) {
@@ -283,7 +347,22 @@ class PostController {
                 const { postId, comment } = req.body;
 
                 const newComment = await db.CommentsPosts.create({ userId: user.id, postId: postId, comment: comment });
-                return res.status(201).json({ title: "Comment created", message: 'The comment has been created' });
+                const sendComment = {
+                    userComment: {
+                        username: user.username,
+                        userIcon: user.userIcon.split('Instaz0rd')[1]
+                    },
+                    comment: comment,
+                    createdAt: newComment.createdAt
+                }
+
+                const userPost = await db.Post.findOne({ where: { id: postId }, include: [ { model: db.User, attributes: ['id'] } ]});
+
+                if(user.id !== userPost.User.id) {
+                    const notification = await db.Notification.create({ userFromId: user.id, userToId: userPost.User.id, notificationMessage: 'commented on your post' });
+                }
+
+                return res.status(201).json(sendComment);
             } catch (error) {
                 console.error('Error creating comment:', error);
                 return res.status(500).json({ title: "Server error", message: 'An error occurred while creating the comment' });
