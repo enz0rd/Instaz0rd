@@ -51,7 +51,7 @@ export default function MenuDrawer() {
           <SheetTitle className="text-4xl">Menu</SheetTitle>
         </SheetHeader>
         <a href={`/u/${userData.username}`} className="pl-4 flex flex-row gap-2 items-center">
-          <img id="user-image" src={userImage} alt="User Icon" className="h-[3rem] w-[3rem] rounded-full bg-white" />
+          <img id="user-image" src={userImage} alt="User Icon" className="h-[3rem] w-[3rem] rounded-full object-cover bg-white" />
           <div className="flex flex-col">
             <h3 className="text-md font-bold">{userData.name}</h3>
             <small>{userData.username}</small>

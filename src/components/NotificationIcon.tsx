@@ -4,11 +4,11 @@ import { useState, useEffect } from "react";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import axios from "axios";
-import { Progress } from "@/components/ui/progress"
-
+import { Skeleton } from "./ui/skeleton";
 
 export default function NotificationIcon() {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [notifications, setNotifications] = useState([]);
 
   function formatTimeAgo(isoDate) {
@@ -29,6 +29,21 @@ export default function NotificationIcon() {
       return `${days}d ago`;
     }
   }
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  useEffect(() => {
+    if (notifications.length === 0) {
+      const timeoutId = setTimeout(() => {
+        setLoading(false);
+      }, 10000);
+      return () => clearTimeout(timeoutId);
+    } else {
+      setLoading(false);
+    }
+  }, [notifications]);
   
   async function fetchAvatar(notification) {
     try {
@@ -43,30 +58,20 @@ export default function NotificationIcon() {
   
   async function processNotifications(response) {
     for (const notification of response) {
-        if(notification.notificationMessage.includes('followed')) {
-            notification.title = 'New Follower';
-        }
+      if (notification.notificationMessage.includes('followed')) {
+        notification.title = 'New Follower';
+      }
       await fetchAvatar(notification);
     }
   }
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      fetchNotifications();
-    }, 10000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
   const fetchNotifications = async () => {
     try {
-        const response = await axios.get("http://localhost:9000/u/getNotifications", {
-            withCredentials: true,
-        });
-        await processNotifications(response.data);
-
-        setNotifications(response.data);
-
+      const response = await axios.get("http://localhost:9000/u/getNotifications", {
+        withCredentials: true,
+      });
+      await processNotifications(response.data);
+      setNotifications(response.data);
     } catch (error) {
       console.error("Error fetching notifications:", error);
     }
@@ -80,31 +85,41 @@ export default function NotificationIcon() {
             <IoNotifications className="cursor-pointer size-[1.7rem] hover:opacity-60 duration-150 ease-in-out" />
           </span>
         </PopoverTrigger>
-      <PopoverContent className="bg-zinc-950 mt-3">
-        <ScrollArea className="max-h-[20rem] flex flex-col">
-        {notifications.length === 0 ? (
-            <div className="text-white">Nothing to see here yet</div>
-          ) : (
-            notifications.map((notification) => (
-              <a
-                key={notification.id}
-                href={`/u/${notification.userFrom.username}`}
-                className="flex flex-row gap-4 mt-1 mb-1 border-zinc-50 hover:opacity-60 duration-150 ease-in-out"
-              >
-                <Avatar>
-                  <AvatarImage className="bg-white" src={notification.userFrom.avatar}></AvatarImage>
-                </Avatar>
-                <div className="grid grid-cols-4">
-                  <h4 className="font-bold leading-none col-span-3 text-white">{notification.title}</h4>
-                  <small className="text-white col-span-1 text-[.55rem] justify-self-end">{formatTimeAgo(notification.createdAt)}</small>
-                  <p className="text-sm col-span-4 text-zinc-200 text-muted-foreground">@{notification.userFrom.username + " " + notification.notificationMessage}</p>
+        <PopoverContent className="bg-zinc-950 mt-3">
+          <ScrollArea className="max-h-[20rem] flex flex-col">
+            {loading ? (
+              Array(3).fill().map((_, i) => (
+                <div key={i} className="flex gap-3 p-4" id='loading-comment'>
+                  <Skeleton className="bg-zinc-600 w-[3rem] h-[3rem] rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="bg-zinc-600 h-4 w-[100px]" />
+                    <Skeleton className="bg-zinc-600 h-4 w-[200px]" />
+                  </div>
                 </div>
-              </a>
-            ))
-          )}
-        </ScrollArea>
-      </PopoverContent>
-    </Popover>
+              ))
+            ) : notifications.length === 0 ? (
+              <div className="text-white">Nothing to see here yet</div>
+            ) : (
+              notifications.map((notification) => (
+                <a
+                  key={notification.id}
+                  href={`/u/${notification.userFrom.username}`}
+                  className="flex flex-row gap-4 mt-1 mb-1 border-zinc-50 hover:opacity-60 duration-150 ease-in-out"
+                >
+                  <Avatar>
+                    <AvatarImage className="bg-white" src={notification.userFrom.avatar}></AvatarImage>
+                  </Avatar>
+                  <div className="grid grid-cols-4">
+                    <h4 className="font-bold leading-none col-span-3 text-white">{notification.title}</h4>
+                    <small className="text-white col-span-1 text-[.55rem] justify-self-end">{formatTimeAgo(notification.createdAt)}</small>
+                    <p className="text-sm col-span-4 text-zinc-200 text-muted-foreground">@{notification.userFrom.username + " " + notification.notificationMessage}</p>
+                  </div>
+                </a>
+              ))
+            )}
+          </ScrollArea>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }

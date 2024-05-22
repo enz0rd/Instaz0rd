@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class FriendRequests extends Model {
+  class Followers extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,14 +13,14 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  FriendRequests.init({
+  Followers.init({
     id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    userFromId:{
+    FollowerId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    userToId: {
+    FollowedId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -36,19 +36,28 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    statusID: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'Statuses',
-        key: 'id'
-      }
-    },
-    dateSent: DataTypes.DATE,
-    dateReplied: DataTypes.DATE
+    dateAdded: DataTypes.DATE,
+    dateRemoved: DataTypes.DATE
   }, {
     sequelize,
-    modelName: 'FriendRequests',
+    modelName: 'Followers',
+    indexes: [
+      {
+        unique: true,
+        fields: ['FollowerId', 'FollowedId']
+      }
+    ]
   });
-  return FriendRequests;
+
+  Followers.associate = function (models) {
+    Followers.belongsTo(models.User, {
+      foreignKey: 'FollowerId',
+      as: 'Follower'
+    });
+    Followers.belongsTo(models.User, {
+      foreignKey: 'FollowedId',
+      as: 'Followed'
+    });
+  }
+  return Followers;
 };

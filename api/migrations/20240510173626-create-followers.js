@@ -2,14 +2,14 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Friends', {
+    await queryInterface.createTable('Followers', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      ownerId: {
+      FollowerId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Users',
@@ -17,7 +17,7 @@ module.exports = {
         },
         allowNull: false
       },
-      friendId: {
+      FollowedId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Users',
@@ -42,6 +42,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Friends');
+    await queryInterface.dropTable('Followers');
   }
 };

@@ -11,7 +11,6 @@ import { Avatar, AvatarImage } from "./ui/avatar";
 import { Skeleton } from "./ui/skeleton";
 import '@/styles/PostActions.css';
 import { Label } from "./ui/label";
-import { Copy } from "lucide-react"
 
 export default function PostUnitActions({ postUserUsername,postId, likes, comments }) {
     const [currentLikes, setCurrentLikes] = useState(likes);
@@ -19,6 +18,9 @@ export default function PostUnitActions({ postUserUsername,postId, likes, commen
     const [loading, setLoading] = useState(true);
     const [newComment, setNewComment] = useState("");
 
+    const currentUrl = window.location.href;
+    const parts = currentUrl.split("/");
+    console.log(parts)
     
 
     useEffect(() => {
@@ -54,7 +56,7 @@ export default function PostUnitActions({ postUserUsername,postId, likes, commen
     const handleLikeClick = async () => {
         try {
             const res = await axios.post(`http://localhost:9000/u/likePost`, { postId }, { withCredentials: true });
-            if (res.data.liked) {
+            if (res.data.title === "Like added") {
                 setCurrentLikes(currentLikes + 1);
             } else {
                 setCurrentLikes(currentLikes - 1);
@@ -167,7 +169,7 @@ export default function PostUnitActions({ postUserUsername,postId, likes, commen
                 <DialogTrigger>
                     <IoSend className="size-[1.5rem] hover:scale-[1.5] duration-300" />
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-md bg-zinc-950">
+                <DialogContent id="share-post" className="sm:max-w-md w-[90%] bg-zinc-950">
                     <DialogHeader>
                     <DialogTitle>Share this post</DialogTitle>
                     <DialogDescription>
@@ -181,7 +183,7 @@ export default function PostUnitActions({ postUserUsername,postId, likes, commen
                         </Label>
                         <Input
                         id="link"
-                        defaultValue={`https://localhost:5174/u/${postUserUsername}/${postId}`}
+                        defaultValue={`${parts[0]}//${parts[2]}/${parts[3]}/${postUserUsername}/${postId}`}
                         readOnly
                         />
                     </div>

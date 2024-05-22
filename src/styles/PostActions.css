@@ -1,4 +1,9 @@
 @media screen and (max-width: 768px){
+    #share-post {
+        width: 90%;
+        border-radius: .7rem;
+    }
+
     #commentDialog {
         width: 90%;
         border-radius: .7rem;

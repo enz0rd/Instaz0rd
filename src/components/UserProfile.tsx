@@ -1,14 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import axios from "axios";
 import { getCookie } from "@/pages/Home";
 import '@/styles/UserProfile.css';
+import { Skeleton } from "./ui/skeleton"; // Importe o componente Skeleton
+import { Button } from "./ui/button";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import ProfileActions from "./ProfileActions";
 
 export default function UserProfile() {
     const currentUrl = window.location.href;
     const parts = currentUrl.split('/');
     const username = parts[4];
-    
+    const [loading, setLoading] = useState(true); // Estado de carregamento
+    const [userData, setUserData] = useState({});
+
     useEffect(() => {
         const encodedUsername = encodeURIComponent(username);
         axios.get(`http://localhost:9000/u/details?username=${encodedUsername}`, {
@@ -20,54 +26,64 @@ export default function UserProfile() {
         .then((response) => {
             const userData = response.data;
             console.log("User data:", userData.id)
-            document.title = `@${userData.username} - Instaz0rd`;
-            document.getElementById('user-name').innerText = userData.name;
-            document.getElementById('user-username').innerText = `@${userData.username}`;
-            document.getElementById('user-since').innerText = `since ${new Date(userData.createdAt).toLocaleDateString()}`;
-            document.getElementById('user-location').innerText = "📍 " + userData.country.nameCountry || '';
-            document.getElementById('user-bio').innerText = userData.bio || '';
-            
             const userIconPath = userData.userIcon || '/api/src/assets/user-default.png';
-            axios.get(`http://localhost:9000/api/getImages?path=${encodeURIComponent(userIconPath)}`, {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-            .then((response) => {
-                document.getElementById('userProfilePic').src = `http://localhost:9000/api/getImages?path=${encodeURIComponent(userIconPath)}`;
-            })
-            .catch((error) => {
-                console.error("Error loading user image:", error);
-            });
+            userData.imgSource = `http://localhost:9000/api/getImages?path=${encodeURIComponent(userIconPath)}`
+            setUserData(userData);
+            document.title = `@${userData.username} - Instaz0rd`;
+            setTimeout(() => {setLoading(false)}, 1500)
         })
         .catch((error) => {
             console.log(error)
             document.title = `User not found - Instaz0rd`;
-            document.getElementById('user-profile').classList.add('hidden');
-            document.getElementById('not-found').classList.remove('hidden');
+            setLoading(false); // Marca o carregamento como concluído mesmo em caso de erro
         });
 
-    });
-    
-    return (
+    }, [username]);
+
+    // Função para renderizar o skeleton de carregamento
+    const renderSkeleton = () => (
         <div className="justify-center mx-auto flex">
-            <div id="user-profile" className="mt-[7rem] grid grid-cols-4 gap-5 items-center w-[60%]">
-                <img id='userProfilePic' alt="user profile pic" className="col-start-2 col-span-1 w-[10rem] h-[10rem] aspect-square object-cover rounded-full" />
-                <div className="flex flex-col col-span-2">
-                    <h1 className="text-3xl font-bold" id="user-name"></h1>
-                    <small id="user-since"></small>
-                    <span id="user-username"></span>        
-                    <span id="user-location"></span>
+            <div id="user-profile" className="mt-[7rem] flex flex-col items-center lg:w-[60%] md:w-[80%] sm:w-[90%] mx-auto">
+                <Skeleton className="w-full max-w-[10rem] bg-zinc-600 aspect-square object-cover rounded-full" />
+                <div className="flex flex-col items-center text-center gap-3 mt-4">
+                    <Skeleton className="h-[2.5rem] w-[15rem] bg-zinc-600 text-3xl font-bold" />
+                    <Skeleton className="h-[1rem] w-[4rem] bg-zinc-600"/>
+                    <Skeleton className="h-[1.5rem] w-[6rem] bg-zinc-600"/>
+                    <Skeleton className="h-[1.5rem] w-[6rem] bg-zinc-600"/>
                 </div>
-                <div className="col-span-4">
-                    <p id="user-bio" className=" mt-2"></p>
+                <div className="mt-4 w-full h-[2rem] text-center">
+                    <Skeleton className="bg-zinc-600 h-[2rem] mt-2" />
                 </div>
-            </div>
-            <div id='not-found' className="absolute top-[50%] left-0 right-0 ml-auto mr-auto w-[20rem] hidden">
-                <h1 className="text-3xl font-bold">User not found</h1>
-                <span>Sorry, we couldn't find the user you were looking for.</span>
             </div>
         </div>
+    );
+
+    return (
+        <>
+            {loading ? renderSkeleton() : (
+                <div className="justify-center mx-auto flex">
+                    <div id="user-profile" className="mt-[7rem] flex flex-col items-center lg:w-[60%] md:w-[80%] sm:w-[90%] mx-auto">
+                        <div className="flex items-center"> {/* Container para imagem e informações do usuário */}
+                            <img id='userProfilePic' src={userData.imgSource} alt="user profile pic" className="w-full max-w-[10rem] aspect-square object-cover rounded-full mr-4" />
+                            <div className="flex flex-col items-start"> {/* Container para informações do usuário */}
+                                <h1 className="text-3xl font-bold" id="user-name">{userData.name}</h1>
+                                <small id="user-since">{`since ${new Date(userData.createdAt).toLocaleDateString()}`}</small>
+                                <span id="user-username">{`@${userData.username}`}</span>        
+                                <span id="user-location">{"📍 " + (userData.country.nameCountry || '')}</span>
+                            </div>
+                            <ProfileActions userData={userData} />
+                        </div>
+                        <div className="mt-4 w-full text-center"> {/* Container para a bio */}
+                            <p id="user-bio" className="text-sm mt-2">{userData.bio || ''}</p>
+                        </div>
+                    </div>
+
+                    <div id='not-found' className="absolute top-[50%] left-0 right-0 ml-auto mr-auto w-[20rem] hidden">
+                        <h1 className="text-3xl font-bold">User not found</h1>
+                        <span>Sorry, we couldn't find the user you were looking for.</span>
+                    </div>
+                </div>
+            )}
+        </>
     );
 }

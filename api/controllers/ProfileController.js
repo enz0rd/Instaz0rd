@@ -20,6 +20,10 @@ class ProfileController {
         const { valid, email } = await AuthController.verifyToken(req);
         if (valid) {
             const user = await db.User.findOne({ where: { email: email } });
+            if(user == null) {
+                return res.status(404).json({ title: "User not found", message: 'The user you are trying to get does not exist' });
+            }
+
             const userId = user.id;
             const notifications = await db.Notification.findAll(
                 { 
@@ -54,6 +58,8 @@ class ProfileController {
     static async getDetails(req, res) {
         const { valid, email } = await AuthController.verifyToken(req);
         if (valid) {
+            const userReq = await db.User.findOne({ where: { email: email } });
+
             const user = await db.User.findOne({
                 attributes: { exclude: ['password'] },
                 where: { username: req.query.username },
@@ -69,8 +75,22 @@ class ProfileController {
             if (user == null) {
                 return res.status(404).json({ title: "User not found", message: 'The user you are trying to get does not exist' });
             }
-            user.dataValues.userIcon = user.dataValues.userIcon.split('Instaz0rd')[1];
+
             
+            if(user.dataValues.id === userReq.dataValues.id) {
+                user.dataValues.isSelf = true;
+            } else {
+                user.dataValues.isSelf = false;
+                user.dataValues.isFollowing = await db.Followers.findOne({ where: {
+                    FollowedId: user.dataValues.id,
+                    FollowerId: userReq.dataValues.id
+                }}) ? true : false;
+            }
+
+            user.dataValues.userIcon = user.dataValues.userIcon.split('Instaz0rd')[1];
+
+            console.log(user);
+
             return res.status(200).json(user);
         } else {
             return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });
@@ -104,6 +124,62 @@ class ProfileController {
         } catch (error) {
             console.error("Error fetching users:", error);
             return res.status(500).json({ error: "Internal Server Error" });
+        }
+    }
+
+    static async followUser(req, res) {
+        const { valid, email } = await AuthController.verifyToken(req);
+        if (valid) {
+            const userReq = await db.User.findOne({ where: { email: email } });
+            const userToFollow = await db.User.findOne({ where: { id: req.body.userId } });
+            if (userToFollow == null) {
+                return res.status(404).json({ title: "User not found", message: 'The user you are trying to follow does not exist' });
+            }
+
+            const follow = await db.Followers.findOne({ where: {
+                FollowedId: userToFollow.id,
+                FollowerId: userReq.id
+            }});
+
+            if(follow) {
+                return res.status(400).json({ title: "Already following", message: 'You are already following this user' });
+            }
+
+            await db.Followers.create({
+                FollowedId: userToFollow.id,
+                FollowerId: userReq.id
+            });
+
+            return res.status(200).json({ title: "Success", message: 'You are now following this user' });
+        } else {
+            return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });
+        }
+    }
+
+    static async unfollowUser(req, res) {
+        const { valid, email } = await AuthController.verifyToken(req);
+        if(valid) {
+            const userReq = await db.User.findOne({ where: { email: email } });
+            const userToUnfollow = await db.User.findOne({ where: { id: req.body.userId } });
+            if (userToUnfollow == null) {
+                return res.status(404).json({ title: "User not found", message: 'The user you are trying to unfollow does not exist' });
+            }
+
+            const follow = await db.Followers.findOne({ where: {
+                FollowedId: userToUnfollow.id,
+                FollowerId: userReq.id
+            }});
+
+            if(!follow) {
+                return res.status(400).json({ title: "Not following", message: 'You are not following this user' });
+            }
+
+            await db.Followers.destroy({ where: {
+                FollowedId: userToUnfollow.id,
+                FollowerId: userReq.id
+            }});
+
+            return res.status(200).json({ title: "Success", message: 'You are no longer following this user' });
         }
     }
 }
