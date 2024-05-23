@@ -255,7 +255,64 @@ class PostController {
                             return res.status(500).json({ title: "Server error", message: 'An error occurred while creating the post' });
                         }
                     } catch (error) {
-                        return res.status(500).json({ title: "Error updating account", message: `There was an error updating the account: ${error.message}` });
+                        return res.status(500).json({ title: "Server error", message: `There was an error: ${error.message}` });
+                    }
+                } catch (error) {
+                    return res.status(500).json({ title: "Error saving file", message: `There was an error saving the file: ${error.message}` });
+                }
+            }
+
+        } else {
+            return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });
+        }
+    }
+
+    static async createStory(req, res) {
+        const { valid, email } = await AuthController.verifyToken(req);
+        if (valid) {
+            const user = await db.User.findOne({ where: { email: email } });
+            if (!user) {
+                return res.status(404).json({ title: "User not found", message: 'The user you are trying to post as does not exist' });
+            }
+
+            if(req.file) {
+                let relativeUploadDir;
+                try {
+                    relativeUploadDir = path.join(__dirname, '../uploads/users/', `${user.id}`, "Stories");
+                    fs.mkdirSync(relativeUploadDir, { recursive: true });
+                } catch (error) {
+                    return res.status(500).json({ title: "Error creating directory", message: `There was an error creating the directory: ${error.message}` });
+                }
+                
+                try {
+                    const buffer = await fs.readFileSync(req.file.path);
+                    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+                    const filename = `${req.file.originalname.replace(
+                        /\.[^/.]+$/,
+                        ""
+                    )}-${uniqueSuffix}${path.extname(req.file.originalname)}`;
+                    const filePath = path.join(relativeUploadDir, filename);
+                    fs.writeFileSync(filePath, buffer);
+                    const fileUrl = filePath;
+
+                    try {
+                        const story = {
+                            userId: user.id,
+                            storyContent: fileUrl
+                        };
+
+                        try {
+                            const newPost = await db.Story.create({
+                                userId: story.userId,
+                                storyContent: story.storyContent,
+                            });
+                            return res.status(201).json({ title: "Story created", message: 'The story has been created'});
+                        } catch (error) {
+                            console.error('Error creating story:', error);
+                            return res.status(500).json({ title: "Server error", message: 'An error occurred while creating the story' });
+                        }
+                    } catch (error) {
+                        return res.status(500).json({ title: "Server error", message: `There was an error: ${error.message}` });
                     }
                 } catch (error) {
                     return res.status(500).json({ title: "Error saving file", message: `There was an error saving the file: ${error.message}` });

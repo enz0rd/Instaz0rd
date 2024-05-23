@@ -1,0 +1,27 @@
+
+#CreatePostDialog {
+    width: 340px;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    flex-wrap: wrap;   
+}
+
+#img-display {
+    margin-bottom: 1rem;
+    width: 100%;
+    height: calc(9/16 * 100%);
+    border-radius: .5rem;
+}
+
+@media screen and (max-height: 800px){
+    #img-display {
+        margin-bottom: 1rem;
+        width: 60%;
+        height: calc(9/16 * 60%);
+        border-radius: .5rem;
+    }
+    
+}

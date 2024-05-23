@@ -5,13 +5,17 @@ const cookieParser = require('cookie-parser');
 router.use(cookieParser());
 
 const multer = require('multer');
-const upload = multer({
+const posts = multer({
     dest: 'uploads/posts/', // Pasta temporária para uploads
+});
+const stories = multer({
+    dest: 'uploads/stories/', // Pasta temporária para uploads
 });
 
 router.use(cookieParser());
 
-router.post('/u/createPost', upload.single('postContent'), PostController.createPost);
+router.post('/u/createPost', posts.single('postContent'), PostController.createPost);
+router.post('/u/createStory', stories.single('storyContent'), PostController.createStory);
 router.get('/u/posts', PostController.getUserPosts);
 router.get('/u/posts/details', PostController.getUserPostById);
 router.post('/u/likePost', PostController.likePost);

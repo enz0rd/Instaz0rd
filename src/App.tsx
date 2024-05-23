@@ -8,6 +8,7 @@ import Logout from './pages/Logout';
 import MyProfile from './pages/MyProfile';
 import NotFound from './pages/NotFound';
 import Post from './pages/Post';
+import Stories from './pages/Stories';
 
 
 export default function App() {
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/logout" element={<Logout />} />
         <Route path="/u/:username" element={<MyProfile />} />
         <Route path="/u/:username/:postId" element={<Post />} />
+        <Route path="/u/:username/stories" element={<Stories />} />
         <Route path="/404" element={<NotFound />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

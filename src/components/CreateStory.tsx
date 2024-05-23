@@ -8,12 +8,12 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import '@/styles/CreatePost.css';
+import '@/styles/CreateStory.css';
 import PostButton from "./PostButton";
 import SelectFilePost from "./SelectFilePost";
-import { FaRegPlusSquare } from "react-icons/fa";
+import { FiPlusCircle } from "react-icons/fi";
 
-export default function CreatePost() {
+export default function CreateStory() {
     const [count, setCount] = useState(0);
     const [validImage, setValidImage] = useState(false);
     const [fileInput, setFileInput] = useState<File | null>(null);
@@ -29,25 +29,20 @@ export default function CreatePost() {
                 <DialogTrigger asChild>
                     <div className="pl-4 transition hover:ease-in-out duration-300 hover:text-zinc-50 hover:font-bold cursor-pointer">
                         <div className="flex flex-row gap-2 items-center">
-                            <FaRegPlusSquare className="w-4" />
-                            <span>Post</span>
+                            <FiPlusCircle className="w-4" />
+                            <span>Story</span>
                         </div>
                     </div>
                 </DialogTrigger>
                 <DialogContent id="CreatePostDialog" className="z-50 bg-zinc-950 dark:bg-white">
                     <DialogHeader>
-                        <DialogTitle className="text-lg">Create Post</DialogTitle>
+                        <DialogTitle className="text-lg">Create Story</DialogTitle>
                     </DialogHeader>
-                    <img alt="Image" id="img-display" src="../src/images/placeholder-image.png" className="object-cover rounded-lg bg-zinc-900" />
+                    <img alt="Image" id="img-display" src="../src/images/placeholder-image-story.png" className="self-center object-cover border-2 aspect-story rounded-lg bg-zinc-900" />
                     <div className="flex flex-col gap-3 w-[100%]">
                         <Label for="select-file">File</Label>
                         <SelectFilePost onFileSelect={handleFileSelect} />
-                        <div className="flex flex-col gap-3 mt-2">
-                            <Label className="w-[16rem]" htmlFor="description">Description</Label>
-                            <Textarea onChange={e => setCount(e.target.value.length)} id="description" maxLength={255} placeholder="Description of the post" />
-                            <small className="mt-[-.5rem]">{count}/255</small>
-                        </div>
-                        <PostButton type='post' validImage={validImage} fileInput={fileInput}/>
+                        <PostButton type='story' validImage={validImage} fileInput={fileInput}/>
                     </div>
                 </DialogContent>
             </Dialog>

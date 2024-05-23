@@ -1,4 +1,5 @@
 import React, { Suspense, useEffect, useState } from "react";
+import { TiPlus } from "react-icons/ti";
 import {
   Sheet,
   SheetContent,
@@ -7,10 +8,17 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { getCookie } from "@/pages/Home";
 import Settings from "./Settings";
 import axios from 'axios';
+import CreateStory from "./CreateStory";
+import { IoMenu } from "react-icons/io5";
 
 // Lazy-load the CreatePost component
 const CreatePost = React.lazy(() => import("@/components/CreatePost"));
@@ -45,10 +53,12 @@ export default function MenuDrawer() {
 
   return (
     <Sheet>
-      <SheetTrigger className="border-t-[.025em] transition hover:opacity-60 duration-150 ease-in-out p-2 rounded-lg">Menu</SheetTrigger>
+      <SheetTrigger className="transition hover:opacity-60 duration-150 ease-in-out text-3xl">
+        <IoMenu />
+      </SheetTrigger>
       <SheetContent className="pb-10 flex flex-col gap-3 bg-zinc-950 dark:bg-white">
         <SheetHeader>
-          <SheetTitle className="text-4xl">Menu</SheetTitle>
+          <SheetTitle className="text-4xl text-zinc-50 mb-5">Menu</SheetTitle>
         </SheetHeader>
         <a href={`/u/${userData.username}`} className="pl-4 flex flex-row gap-2 items-center">
           <img id="user-image" src={userImage} alt="User Icon" className="h-[3rem] w-[3rem] rounded-full object-cover bg-white" />
@@ -57,14 +67,34 @@ export default function MenuDrawer() {
             <small>{userData.username}</small>
           </div>
         </a>
-        {/* Wrap the CreatePost component in Suspense */}
-        <Suspense fallback={<div>Loading...</div>}>
-          <CreatePost />
-        </Suspense>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Settings />
-        </Suspense>
-        <a href="/logout" className="pl-4 transition hover:ease-in-out duration-300 hover:text-zinc-50 hover:font-bold">Logout</a>
+        <div className="border-[.025em] pl-3 pr-3 pb-4 rounded-2xl flex flex-col gap-3">
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger>
+                <div className="flex flex-row gap-1 items-center">
+                  <TiPlus className="text-xl" />
+                  <span>Create</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="flex flex-col gap-5">
+                <Suspense fallback={<div>Loading...</div>}>
+                  <CreatePost />
+                </Suspense>
+                <Suspense fallback={<div>Loading...</div>}>
+                  <CreateStory />
+                </Suspense>
+                {/* <Suspense fallback={<div>Loading...</div>}>
+                  <CreatePost />
+                </Suspense> */}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          {/* Wrap the CreatePost component in Suspense */}
+          <Suspense fallback={<div>Loading...</div>}>
+            <Settings />
+          </Suspense>
+          <a href="/logout" className="pl-4 transition hover:ease-in-out duration-300 hover:text-zinc-50 hover:font-bold">Logout</a>
+        </div>
       </SheetContent>
     </Sheet>
   );

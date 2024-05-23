@@ -78,8 +78,8 @@ class ProfileController {
 
             user.dataValues.qtFollowers = await db.Followers.count({ where: { FollowedId: user.dataValues.id } });
             user.dataValues.qtFollowing = await db.Followers.count({ where: { FollowerId: user.dataValues.id } });
-            user.dataValues.qtPosts = await db.Post.count({ where: { UserId: user.dataValues.id } });
-
+            user.dataValues.qtPosts = await db.Post.count({ where: { userId: user.dataValues.id } });
+            user.dataValues.qtStories = await db.Story.count({ where: { userId: user.dataValues.id } });
             
             if(user.dataValues.id === userReq.dataValues.id) {
                 user.dataValues.isSelf = true;

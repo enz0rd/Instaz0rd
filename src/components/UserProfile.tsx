@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import axios from "axios";
-import { getCookie } from "@/pages/Home";
 import '@/styles/UserProfile.css';
 import { Skeleton } from "./ui/skeleton"; // Importe o componente Skeleton
-import { Button } from "./ui/button";
-import { IoIosAddCircleOutline } from "react-icons/io";
 import ProfileActions from "./ProfileActions";
 
 export default function UserProfile() {
@@ -28,6 +24,7 @@ export default function UserProfile() {
             console.log("User data:", userData.id)
             const userIconPath = userData.userIcon || '/api/src/assets/user-default.png';
             userData.imgSource = `http://localhost:9000/api/getImages?path=${encodeURIComponent(userIconPath)}`
+            
             setUserData(userData);
             document.title = `@${userData.username} - Instaz0rd`;
             setTimeout(() => {setLoading(false)}, 1500)
@@ -63,8 +60,14 @@ export default function UserProfile() {
             {loading ? renderSkeleton() : (
                 <div className="justify-center mx-auto flex">
                     <div id="user-profile" className="mt-[7rem] flex flex-col items-center lg:w-[60%] md:w-[80%] sm:w-[90%] mx-auto">
-                        <div className="flex items-center"> {/* Container para imagem e informações do usuário */}
-                            <img id='userProfilePic' src={userData.imgSource} alt="user profile pic" className="w-full max-w-[10rem] aspect-square object-cover rounded-full mr-4" />
+                        <div className="flex items-center"> 
+                            {userData.qtStories > 0 ? (
+                                <a href={`/u/${userData.username}/stories`} title="see stories">
+                                    <img id='userProfilePic' src={userData.imgSource} alt="user profile pic" className="w-full max-w-[10rem] aspect-square object-cover rounded-full mr-4 outline outline-3 outline-offset-4 outline-purple-600" />
+                                </a>
+                            ) : (
+                                <img id='userProfilePic' src={userData.imgSource} alt="user profile pic" className="w-full max-w-[10rem] aspect-square object-cover rounded-full mr-4" />
+                            )}
                             <div className="flex flex-col items-start"> {/* Container para informações do usuário */}
                                 <h1 className="text-3xl font-bold" id="user-name">{userData.name}</h1>
                                 <small id="user-since">{`since ${new Date(userData.createdAt).toLocaleDateString()}`}</small>

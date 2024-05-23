@@ -16,7 +16,7 @@ export default function Settings() {
 
             <Dialog>
                 <DialogTrigger asChild>
-                    <div className="pl-4 transition hover:ease-in-out duration-300 hover:text-zinc-50 hover:font-bold cursor-pointer">Settings</div>
+                    <div className="pl-4 transition border-b-[0.025em] border-zinc-50 pb-3 hover:ease-in-out duration-300 hover:text-zinc-50 hover:font-bold cursor-pointer">Settings</div>
                 </DialogTrigger>
                 <DialogContent id="CreatePostDialog" className="z-50 bg-zinc-950 dark:bg-white">
                     <DialogHeader>

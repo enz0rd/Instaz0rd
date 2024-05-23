@@ -21,53 +21,83 @@ async function fileToBytes(file: File): Promise<Uint8Array> {
     });
 }
 
-export default function PostButton({ validImage, fileInput }) {
+export default function PostButton({ type, validImage, fileInput }) {
+    
     async function Post() {
-        const description = document.getElementById('description') as HTMLTextAreaElement;
-        console.log(description.value);
-
         if (!validImage) {
             alert('Please select a valid image');
             return;
         }
-
-        if (description.value === '') {
-            const descConfirm = confirm('The post has no description, are you sure you want to post it?');
-            if (!descConfirm) {
-                return;
-            }
-        }
-
-        // Prepare form data
+        
         const formData = new FormData();
-        formData.append('postDescription', description.value);
-        formData.append('postContent', fileInput);
+        if(type === 'story') {
+            formData.append('storyContent', fileInput);
+            
+            document.getElementById('post-button').classList.add('cursor-not-allowed', 'opacity-50');
+            document.getElementById('post-button').setAttribute('disabled', 'true');
+            try {
+                await axios.post('http://localhost:9000/u/createStory', formData, {
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                }).then((response) => {
+                    alert('Story submitted successfully');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                })
+                .catch((error) => {
+                    console.error('Error submitting story:', error.response.data);
+                    alert('Failed to submit story. Please try again later.');
+                    document.getElementById('post-button').classList.remove('cursor-not-allowed', 'opacity-50');
+    
+                });
+            } catch (error) {
+                console.error('Error submitting story:', error);
+                alert('Failed to submit story. Please try again later.');
+                document.getElementById('post-button').classList.remove('cursor-not-allowed', 'opacity-50');
+    
+            }
+        } else if(type === 'post') {
+            const description = document.getElementById('description') as HTMLTextAreaElement;
+            console.log(description.value);
 
-        document.getElementById('post-button').classList.add('cursor-not-allowed', 'opacity-50');
-        document.getElementById('post-button').setAttribute('disabled', 'true');
-        try {
-            await axios.post('http://localhost:9000/u/createPost', formData, {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'multipart/form-data',
+            if (description.value === '') {
+                const descConfirm = confirm('The post has no description, are you sure you want to post it?');
+                if (!descConfirm) {
+                    return;
                 }
-            }).then((response) => {
-                alert('Post submitted successfully');
-                setTimeout(() => {
-                    window.location.href = '/';
-                }, 500);
-            })
-            .catch((error) => {
-                console.error('Error submitting post:', error.response.data);
+            }
+            formData.append('postDescription', description.value);
+            formData.append('postContent', fileInput);
+            
+            document.getElementById('post-button').classList.add('cursor-not-allowed', 'opacity-50');
+            document.getElementById('post-button').setAttribute('disabled', 'true');
+            try {
+                await axios.post('http://localhost:9000/u/createPost', formData, {
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                }).then((response) => {
+                    alert('Post submitted successfully');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                })
+                .catch((error) => {
+                    console.error('Error submitting post:', error.response.data);
+                    alert('Failed to submit post. Please try again later.');
+                    document.getElementById('post-button').classList.remove('cursor-not-allowed', 'opacity-50');
+    
+                });
+            } catch (error) {
+                console.error('Error submitting post:', error);
                 alert('Failed to submit post. Please try again later.');
                 document.getElementById('post-button').classList.remove('cursor-not-allowed', 'opacity-50');
-
-            });
-        } catch (error) {
-            console.error('Error submitting post:', error);
-            alert('Failed to submit post. Please try again later.');
-            document.getElementById('post-button').classList.remove('cursor-not-allowed', 'opacity-50');
-
+    
+            }
         }
     }
 
