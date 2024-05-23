@@ -45,7 +45,7 @@ const formSchema = (formData) => z.object({
     }),
 });
 
-export default function CreatePost() {
+export default function UpdateProfile() {
     const [msgalert, setAlert] = useState({ title: '', message: '', isVisible: false });
     const [validImage, setValidImage] = useState(false);
     const [fileInput, setFileInput] = useState<File | null>(null);
@@ -135,7 +135,7 @@ export default function CreatePost() {
             <MessageAlert title={alert.title} message={alert.message} isVisible={alert.isVisible} />
             <Dialog>
                 <DialogTrigger asChild>
-                    <div className="pl-4 transition hover:ease-in-out duration-300 hover:text-zinc-50 hover:font-bold cursor-pointer">Update Profile</div>
+                    <div className="transition hover:ease-in-out duration-300 hover:text-zinc-50 hover:font-bold cursor-pointer">Update Profile</div>
                 </DialogTrigger>
                 <DialogContent id="CreatePostDialog" className="z-50 bg-zinc-950 dark:bg-white">
                     <DialogHeader>

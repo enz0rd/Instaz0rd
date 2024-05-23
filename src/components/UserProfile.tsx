@@ -70,8 +70,13 @@ export default function UserProfile() {
                                 <small id="user-since">{`since ${new Date(userData.createdAt).toLocaleDateString()}`}</small>
                                 <span id="user-username">{`@${userData.username}`}</span>        
                                 <span id="user-location">{"📍 " + (userData.country.nameCountry || '')}</span>
+                                <ProfileActions userData={userData} />
                             </div>
-                            <ProfileActions userData={userData} />
+                        </div>
+                        <div className="flex gap-3 mt-5">
+                            <small className="border-[0.025em] border-zinc-50 p-[.5rem] rounded-lg" >Posts {userData.qtPosts}</small>
+                            <small className="border-[0.025em] border-zinc-50 p-[.5rem] rounded-lg" >Followers {userData.qtFollowers}</small>
+                            <small className="border-[0.025em] border-zinc-50 p-[.5rem] rounded-lg">Following {userData.qtFollowing}</small>
                         </div>
                         <div className="mt-4 w-full text-center"> {/* Container para a bio */}
                             <p id="user-bio" className="text-sm mt-2">{userData.bio || ''}</p>

@@ -3,6 +3,7 @@ import PostUnitActions from "@/components/PostUnitActions";
 import { Skeleton } from "@/components/ui/skeleton";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { getCookie } from "./Home";
 
 export default function Post() {
     const currentUrl = window.location.href;
@@ -12,6 +13,15 @@ export default function Post() {
     const [post, setPost] = useState(null); // Inicializa como null
     const [loading, setLoading] = useState(true); // Estado de carregamento
     const [error, setError] = useState(null); // Estado de erro
+
+    // Obtém o valor do cookie 'token'
+    const token = getCookie('token');
+    
+    // Verifica se o token é inválido ou não existe
+    if(!token || token === undefined || token === null) {
+        window.location.href = '/signin';
+        return null;
+    }
 
     useEffect(() => {
         axios.get(`http://localhost:9000/u/posts/details?username=${username}&postId=${postId}`, {

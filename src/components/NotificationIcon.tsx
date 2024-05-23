@@ -58,7 +58,7 @@ export default function NotificationIcon() {
   
   async function processNotifications(response) {
     for (const notification of response) {
-      if (notification.notificationMessage.includes('followed')) {
+      if (notification.notificationMessage.includes('follow')) {
         notification.title = 'New Follower';
       }
       await fetchAvatar(notification);

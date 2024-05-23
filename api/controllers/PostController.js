@@ -281,6 +281,7 @@ class PostController {
                 const checkLike = await db.LikesPosts.findOne({ where: { userId: user.id, postId: postId } });
                 if(checkLike) {
                     const removeLike = await db.LikesPosts.destroy({ where: { userId: user.id, postId: postId } });
+                    await db.Notification.destroy({ where: { userFromId: user.id, userToId: postId, notificationMessage: 'liked your post' } });
                     return res.status(200).json({ title: "Like removed", message: 'The like has been removed' });
                 } else {
                     const like = await db.LikesPosts.create({ userId: user.id, postId: postId });

@@ -12,7 +12,7 @@ export default function Home() {
     const token = getCookie('token');
     
     // Verifica se o token é inválido ou não existe
-    if(!token || token === 'undefined' || token === null) {
+    if(!token || token === undefined || token === null) {
         window.location.href = '/signin';
         return null;
     }

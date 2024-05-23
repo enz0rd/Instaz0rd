@@ -76,6 +76,10 @@ class ProfileController {
                 return res.status(404).json({ title: "User not found", message: 'The user you are trying to get does not exist' });
             }
 
+            user.dataValues.qtFollowers = await db.Followers.count({ where: { FollowedId: user.dataValues.id } });
+            user.dataValues.qtFollowing = await db.Followers.count({ where: { FollowerId: user.dataValues.id } });
+            user.dataValues.qtPosts = await db.Post.count({ where: { UserId: user.dataValues.id } });
+
             
             if(user.dataValues.id === userReq.dataValues.id) {
                 user.dataValues.isSelf = true;
@@ -150,6 +154,12 @@ class ProfileController {
                 FollowerId: userReq.id
             });
 
+            await db.Notification.create({
+                userFromId: userReq.id,
+                userToId: userToFollow.id,
+                notificationMessage: 'followed you',
+            });
+
             return res.status(200).json({ title: "Success", message: 'You are now following this user' });
         } else {
             return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });
@@ -173,6 +183,12 @@ class ProfileController {
             if(!follow) {
                 return res.status(400).json({ title: "Not following", message: 'You are not following this user' });
             }
+
+            await db.Notification.destroy({ where: {
+                userFromId: userReq.id,
+                userToId: userToUnfollow.id,
+                notificationMessage: 'followed you',
+            } });
 
             await db.Followers.destroy({ where: {
                 FollowedId: userToUnfollow.id,

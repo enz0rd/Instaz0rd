@@ -13,6 +13,7 @@ export default function Settings() {
 
     return (
         <div>
+
             <Dialog>
                 <DialogTrigger asChild>
                     <div className="pl-4 transition hover:ease-in-out duration-300 hover:text-zinc-50 hover:font-bold cursor-pointer">Settings</div>
@@ -23,6 +24,7 @@ export default function Settings() {
                     </DialogHeader>
                     <div className="flex flex-col gap-3 w-[100%]">
                         <p>change something</p>
+                        <hr />
                         <UpdateProfile />
                     </div>
                 </DialogContent>

@@ -148,7 +148,7 @@ export default function PostUnitActions({ postUserUsername,postId, likes, commen
                                             <AvatarImage src={comment.User.userIcon} />
                                         </Avatar>
                                         <div className="grid w-[100%] grid-cols-5">
-                                            <h4 className="font-bold leading-none col-span-4 text-white">{comment.User.username}</h4>
+                                            <h4 className="font-bold leading-none col-span-4 text-white">@{comment.User.username}</h4>
                                             <small className="text-white col-span-1 text-[.55rem] justify-self-end">{comment.createdAt}</small>
                                             <div className="text-sm col-span-4 text-zinc-200 text-muted-foreground">{comment.comment}</div>
                                         </div>
