@@ -38,7 +38,7 @@ export default function CreatePost() {
                     <DialogHeader>
                         <DialogTitle className="text-lg">Create Post</DialogTitle>
                     </DialogHeader>
-                    <img alt="Image" id="img-display" src="../src/images/placeholder-image.png" className="object-cover aspect-square rounded-lg bg-zinc-900" />
+                    <img alt="Image" id="img-display" src="/src/images/placeholder-image.png" className="object-cover aspect-square rounded-lg bg-zinc-900" />
                     <div className="flex flex-col gap-3 w-[100%]">
                         <Label for="select-file">File</Label>
                         <SelectFilePost onFileSelect={handleFileSelect} />

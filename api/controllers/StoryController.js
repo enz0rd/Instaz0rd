@@ -77,7 +77,7 @@ class StoryController {
                             [db.Sequelize.Op.gt]: new Date(new Date().setDate(new Date().getDate() - 1))
                         }
                     },
-                    order: [['createdAt', 'DESC']],
+                    order: [['createdAt', 'ASC']],
                     include: [
                         {
                             model: db.User,
