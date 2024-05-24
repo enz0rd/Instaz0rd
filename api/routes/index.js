@@ -5,6 +5,7 @@ const account = require('./AccountRoutes.js');
 const utils = require('./UtilsRoutes.js');
 const profile = require('./ProfileRoutes.js');
 const posts = require('./PostsRoutes.js');
+const stories = require('./StoriesRoutes.js');
 const cookieParser = require('cookie-parser');
 
 module.exports = (app) => {
@@ -14,6 +15,7 @@ module.exports = (app) => {
         account, 
         utils, 
         profile,
-        posts
+        posts,
+        stories
     );
 }

@@ -74,14 +74,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'userId',
     });
   
-    // User.hasMany(models.Friends, {
-    //   foreignKey: 'ownerId',
-    // });
-  
-    // User.hasMany(models.Friends, {
-    //   foreignKey: 'friendId',
-    // });
-  
+    User.hasMany(models.Story, {
+      foreignKey: 'userId',
+      as: 'userStories',
+    });
     // Adicione uma nova associação para notificações de usuário de e para
     User.hasMany(models.Notification, {
       foreignKey: 'userFromId',
