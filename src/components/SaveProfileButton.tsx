@@ -25,7 +25,6 @@ export default function SaveProfileButton({ validImage, fileInput }) {
 
     async function Post() {
         const description = document.getElementById('description') as HTMLTextAreaElement;
-        console.log(description.value);
 
         if (!validImage) {
             alert('Please select a valid image');
@@ -37,7 +36,6 @@ export default function SaveProfileButton({ validImage, fileInput }) {
             const bytes = await fileToBytes(fileInput);
             setImageBytes(bytes);
             const base64String = btoa(String.fromCharCode.apply(null, bytes));
-            console.log('Base64 String:', base64String);
         } catch (error) {
             console.error('Error converting file to bytes:', error);
             alert('Failed to convert file to bytes. Please try again.');

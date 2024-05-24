@@ -31,7 +31,6 @@ export default function Post() {
             if (!res.data) {
                 window.location.href = '/404';
             } else {
-                console.log("Post data:", res.data);
                 res.data.postContent = `http://localhost:9000/api/getImages?path=${encodeURIComponent(res.data.postContent)}`;
                 res.data.createdAt = new Date(res.data.createdAt).toLocaleDateString();
                 setPost(res.data);

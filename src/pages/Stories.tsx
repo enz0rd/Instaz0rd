@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { FaCircleChevronLeft, FaCircleChevronRight } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 
+let index = 0;
+
 export default function Stories() {
     const parts = window.location.pathname.split('/');
     const [stories, setStories] = useState([]);
@@ -53,29 +55,28 @@ export default function Stories() {
         };
     
         fetchStories();
-    }, []); // Adicionando 'parts' como dependência
+    }, []);
     
 
     const handleBackClick = () => {
         setCurrentStoryIndex(prevIndex => Math.max(prevIndex - 1, 0));
     };
 
-    let index = 0;
     const handleForwardClick = () => {
         if(index < stories.length - 1) {
-            index++;
+            index= index + 1;
         } else {
-            window.location.href = `/u/${parts[2]}`;
+            history.back()
         }
         setCurrentStoryIndex(prevIndex => Math.min(prevIndex + 1, stories.length - 1));
     };
 
     const handleClose = () => {
-        window.location.href = `/u/${parts[2]}`
+        history.back()
     }
 
     return (
-        <>
+        <div className="bg-gradient-to-br from-zinc-950 via-zinc-850 to-zinc-950">
             {stories.length > 0 && (
                 <>
                     <Header />
@@ -89,13 +90,13 @@ export default function Stories() {
                     </div>
                 </>
             )}
-            <div className="absolute top-[50%] w-[100%] justify-between p-4 flex flex-row">
+            <div className="absolute top-[50%] w-[100%] justify-between pl-10 pr-10 flex flex-row">
                 <FaCircleChevronLeft onClick={handleBackClick} className="bg-zinc-950 border-zinc-950 border-2 scale-125 rounded-full drop-shadow-lg text-xl cursor-pointer"/>
                 <FaCircleChevronRight onClick={handleForwardClick} className="bg-zinc-950 border-zinc-950 border-2 scale-125 rounded-full drop-shadow-xl text-xl cursor-pointer"/>
             </div>
-            <div className="absolute top-[12.5%] right-4">
+            <div className="absolute top-[10%] right-5">
                 <IoClose onClick={handleClose} title="close" className="bg-zinc-950 border-zinc-950 border-2 scale-125 hover:scale-150 duration-300 rounded-full drop-shadow-xl text-xl cursor-pointer"/>
             </div>
-        </>
+        </div>
     );
 }

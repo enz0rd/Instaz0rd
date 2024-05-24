@@ -61,7 +61,6 @@ export default function PostButton({ type, validImage, fileInput }) {
             }
         } else if(type === 'post') {
             const description = document.getElementById('description') as HTMLTextAreaElement;
-            console.log(description.value);
 
             if (description.value === '') {
                 const descConfirm = confirm('The post has no description, are you sure you want to post it?');

@@ -16,7 +16,7 @@ export default function MyProfile() {
     }
     
     return (
-        <div>
+        <div className="bg-gradient-to-br h-screen from-zinc-950 via-zinc-850 to-zinc-950 text-slate-50">
             <Header />
             <UserProfile />
             <UserPosts /> 

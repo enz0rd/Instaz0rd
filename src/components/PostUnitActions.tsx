@@ -20,8 +20,6 @@ export default function PostUnitActions({ postUserUsername,postId, likes, commen
 
     const currentUrl = window.location.href;
     const parts = currentUrl.split("/");
-    console.log(parts)
-    
 
     useEffect(() => {
         if (currentComments.length === 0) {
@@ -69,7 +67,6 @@ export default function PostUnitActions({ postUserUsername,postId, likes, commen
     const handleCommentClick = async () => {
         try {
             const res = await axios.get(`http://localhost:9000/posts/getComments?postId=${postId}`, { withCredentials: true });
-            console.log(res.data)
             const formattedComments = res.data.map(comment => ({
                 ...comment,
                 createdAt: formatTimeAgo(comment.createdAt),
@@ -90,7 +87,6 @@ export default function PostUnitActions({ postUserUsername,postId, likes, commen
 
         try {
             const res = await axios.post(`http://localhost:9000/posts/createComment`, { postId, comment: newComment }, { withCredentials: true });
-            console.log(res.data)
             const newCommentData = {
                 comment: res.data.comment,
                 createdAt: formatTimeAgo(res.data.createdAt),

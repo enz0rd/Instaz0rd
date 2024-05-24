@@ -21,7 +21,6 @@ export default function UserProfile() {
         })
         .then((response) => {
             const userData = response.data;
-            console.log("User data:", userData.id)
             const userIconPath = userData.userIcon || '/api/src/assets/user-default.png';
             userData.imgSource = `http://localhost:9000/api/getImages?path=${encodeURIComponent(userIconPath)}`
             
@@ -32,6 +31,7 @@ export default function UserProfile() {
         .catch((error) => {
             console.log(error)
             document.title = `User not found - Instaz0rd`;
+            window.location.href = '/404';
             setLoading(false); // Marca o carregamento como concluído mesmo em caso de erro
         });
 
@@ -60,10 +60,16 @@ export default function UserProfile() {
             {loading ? renderSkeleton() : (
                 <div className="justify-center mx-auto flex">
                     <div id="user-profile" className="mt-[7rem] flex flex-col items-center lg:w-[60%] md:w-[80%] sm:w-[90%] mx-auto">
-                        <div className="flex items-center"> 
+                        <div className="flex items-center "> 
                             {userData.qtStories > 0 ? (
-                                <a href={`/u/${userData.username}/stories`} title="see stories">
-                                    <img id='userProfilePic' src={userData.imgSource} alt="user profile pic" className="w-full max-w-[10rem] aspect-square object-cover rounded-full mr-4 outline outline-3 outline-offset-4 outline-purple-600" />
+                                <a href={`/u/${userData.username}/stories`} title="see stories" className="group mr-4">
+                                    <div className="bg-gradient-to-br from-purple-700 via-purple-600 to-purple-400
+                                    group-hover:scale-105
+                                    duration-300 ease-in-out w-full max-w-[10rem] p-[.25rem] rounded-full">
+                                        <div className="bg-zinc-950 p-1 rounded-full">
+                                            <img id='userProfilePic' src={userData.imgSource} alt="user profile pic" className="aspect-square object-cover rounded-full" />
+                                        </div>
+                                    </div>
                                 </a>
                             ) : (
                                 <img id='userProfilePic' src={userData.imgSource} alt="user profile pic" className="w-full max-w-[10rem] aspect-square object-cover rounded-full mr-4" />

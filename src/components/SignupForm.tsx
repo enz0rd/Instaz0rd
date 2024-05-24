@@ -87,7 +87,6 @@ export default function LoginForm() {
       }
     })
     .then((res) => {
-      console.log(res);
       setAlert({
         title: res.data.title, 
         message: res.data.message + ". Redirecting...",

@@ -18,7 +18,7 @@ export default function Home() {
     }
     
     return (
-        <div className="bg-zinc-950 dark:bg-white text-slate-50">
+        <div className="bg-gradient-to-br h-screen from-zinc-950 via-zinc-850 to-zinc-950 text-slate-50">
             <Header />
         </div>
     )

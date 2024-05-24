@@ -71,7 +71,6 @@ class ProfileController {
                     }
                 ]
             });
-            // console.log(user.dataValues)
             if (user == null) {
                 return res.status(404).json({ title: "User not found", message: 'The user you are trying to get does not exist' });
             }
@@ -92,8 +91,6 @@ class ProfileController {
             }
 
             user.dataValues.userIcon = user.dataValues.userIcon.split('Instaz0rd')[1];
-
-            console.log(user);
 
             return res.status(200).json(user);
         } else {

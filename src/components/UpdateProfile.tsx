@@ -11,7 +11,6 @@ import { Textarea } from "@/components/ui/textarea";
 import '@/styles/CreatePost.css';
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import SelectFilePost from "./SelectFilePost";
 import { Input } from "./ui/input";
 import { getCookie } from "@/pages/Home";
 import {
@@ -23,16 +22,13 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { ScrollArea } from "./ui/scroll-area";
-import SaveProfileButton from "./SaveProfileButton";
 import { useForm } from "react-hook-form";
-import axios from 'axios'
-import { SelectBox } from "./select";
+import axios from 'axios';
 import MessageAlert from "./MessageAlert";
 import { Button } from "./ui/button";
-import SaveProfileIcon from "./SaveProfileIcon";
-import { get } from "http";
+import ChangeProfileImage from "./ChangeProfileImage";
 
-const formSchema = (formData) => z.object({
+const formSchema = (formData: any) => z.object({
     username: z.string().min(2, {
         message: "Username must be at least 2 characters long.",
     }),
@@ -46,10 +42,7 @@ const formSchema = (formData) => z.object({
 });
 
 export default function UpdateProfile() {
-    const [msgalert, setAlert] = useState({ title: '', message: '', isVisible: false });
-    const [validImage, setValidImage] = useState(false);
-    const [fileInput, setFileInput] = useState<File | null>(null);
-    const [userImage, setUserImage] = useState('');
+    const [alert, setAlert] = useState({ title: '', message: '', isVisible: false });
 
     useEffect(() => {
         const userIconPath = localStorage.getItem('userIcon');
@@ -68,8 +61,8 @@ export default function UpdateProfile() {
         }
     }, []);
 
-    let userData = '';
-    if(getCookie('user')?.startsWith('j%3A')) {
+    let userData: any = '';
+    if (getCookie('user')?.startsWith('j%3A')) {
         userData = JSON.parse(decodeURIComponent(getCookie('user').substring(4)));
     } else {
         userData = JSON.parse(decodeURIComponent(getCookie('user')));
@@ -81,11 +74,6 @@ export default function UpdateProfile() {
         bio: userData.bio || null,
         phonenum: userData.phonenum,
     });
-
-    const handleFileSelect = (fileInput, validImage) => {
-        setFileInput(fileInput);
-        setValidImage(validImage);
-    };
 
     function resetPassword() {
         const confirmDialog = confirm('Are you sure you want to reset your password?');
@@ -111,23 +99,21 @@ export default function UpdateProfile() {
         },
     });
 
-    function onSubmit(values) {
-        console.log({...values});
-        axios.post('http://localhost:9000/updateAccount', {...values}, {
+    function onSubmit(values: any) {
+        axios.post('http://localhost:9000/updateAccount', { ...values }, {
             withCredentials: true,
             headers: {
                 'Content-Type': 'application/json',
             }
         })
-        .then((response) => {
-            // console.log(response.data);
-            alert('Account updated successfully.');
-            setTimeout(() => {window.location.reload()}, 2000);
-        })
-        .catch((err) => {
-            console.log('Error updating account:', err.response.data);
-            alert('Failed to update account. ' + err.response.data.message || 'Please try again later');
-        });
+            .then((response) => {
+                alert('Account updated successfully.');
+                setTimeout(() => { window.location.reload() }, 2000);
+            })
+            .catch((err) => {
+                console.log('Error updating account:', err.response.data);
+                alert('Failed to update account. ' + err.response.data.message || 'Please try again later');
+            });
     }
 
     return (
@@ -141,8 +127,7 @@ export default function UpdateProfile() {
                     <DialogHeader>
                         <DialogTitle className="text-lg">Update Profile</DialogTitle>
                     </DialogHeader>
-                    <img alt="User Icon" id="img-display" src={userImage} className="border object-cover rounded-full bg-zinc-900" />
-                    <ScrollArea className="flex border-t-[.025em] rounded-t-[.5rem] p-[.5rem] h-[15rem] w-[100%] pr-4">
+                    <ScrollArea className="flex border-t-[.025em] rounded-t-[.5rem] p-[.5rem] h-[30rem] w-[100%] pr-4">
                         <Form {...form}>
                             <h2 className="font-bold text-xl mt-3">Profile details</h2>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-100 flex-col gap-2">
@@ -202,10 +187,7 @@ export default function UpdateProfile() {
                         <h2 className="font-bold text-xl mt-3">Other</h2>
                         <div className="flex flex-col gap-3 mt-3">
                             <Label htmlFor="select-file">Profile Image</Label>
-                            <div className="flex flex-row items-center truncate justify-between align-">
-                                <SelectFilePost onFileSelect={handleFileSelect} />
-                                <SaveProfileIcon validImage={validImage} fileInput={fileInput} />
-                            </div>
+                            <ChangeProfileImage />
                         </div>
                         <div className="flex flex-col gap-3 mt-3">
                             <Label className="w-[16rem]" htmlFor="password">Password</Label>

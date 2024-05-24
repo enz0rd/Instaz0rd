@@ -323,7 +323,6 @@ class PostController {
                 });
 
                 for(let comment of comments) {
-                    console.log(comment)
                     comment.commentsUser.userIcon = comment.commentsUser.userIcon.split('Instaz0rd')[1];
                 }
                 return res.status(200).json(comments);
