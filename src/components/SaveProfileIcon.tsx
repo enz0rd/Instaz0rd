@@ -7,6 +7,7 @@ export default function SaveProfileIcon({ validImage, fileInput }) {
     const [isLoading, setIsLoading] = useState(false);
 
     async function Save() {
+        console.log(`Válido: ${validImage}, Imagem: ${fileInput}`);
         if (!validImage || !fileInput) {
             alert('Please select a valid image');
             return;
@@ -17,7 +18,7 @@ export default function SaveProfileIcon({ validImage, fileInput }) {
         try {
             // Create FormData object
             const formData = new FormData();
-            formData.append('userIcon', fileInput);
+            formData.append('userIcon', fileInput); // Adicionando o arquivo diretamente
 
             // Send the FormData object to the server
             await axios.post('http://localhost:9000/updateAccount', formData, {

@@ -1,30 +1,10 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-
-// Função para converter um arquivo em um array de bytes
-async function fileToBytes(file: File): Promise<Uint8Array> {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            if (event.target && event.target.result instanceof ArrayBuffer) {
-                const buffer = new Uint8Array(event.target.result);
-                resolve(buffer);
-            } else {
-                reject(new Error('Failed to read file as ArrayBuffer'));
-            }
-        };
-        reader.onerror = (error) => {
-            reject(error);
-        };
-        reader.readAsArrayBuffer(file);
-    });
-}
 
 export default function PostButton({ type, validImage, fileInput }) {
     
     async function Post() {
-        if (!validImage) {
+        if (!validImage || !fileInput) {
             alert('Please select a valid image');
             return;
         }
@@ -36,6 +16,7 @@ export default function PostButton({ type, validImage, fileInput }) {
             document.getElementById('post-button').classList.add('cursor-not-allowed', 'opacity-50');
             document.getElementById('post-button').setAttribute('disabled', 'true');
             try {
+                console.log(formData)
                 await axios.post('http://localhost:9000/u/createStory', formData, {
                     withCredentials: true,
                     headers: {
@@ -74,6 +55,7 @@ export default function PostButton({ type, validImage, fileInput }) {
             document.getElementById('post-button').classList.add('cursor-not-allowed', 'opacity-50');
             document.getElementById('post-button').setAttribute('disabled', 'true');
             try {
+                console.log(...formData)
                 await axios.post('http://localhost:9000/u/createPost', formData, {
                     withCredentials: true,
                     headers: {

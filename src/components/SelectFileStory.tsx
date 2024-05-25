@@ -5,10 +5,11 @@ import 'react-image-crop/dist/ReactCrop.css';
 import { Button } from "./ui/button";
 import { FaCropAlt } from "react-icons/fa";
 
-const MIN_DIMENSION = 150;
-const ASPECT_RATIO = 1;
+const MIN_WIDTH = 150;
+const MIN_HEIGHT = 266;
+const ASPECT_RATIO = 9/16;
 
-export default function SelectFilePost({ onFileSelect }) {
+export default function SelectFileStory({ onFileSelect }) {
     const [imgSrc, setImgSrc] = useState('');
     const [crop, setCrop] = useState<Crop>();
     const [error, setError] = useState('');
@@ -28,7 +29,7 @@ export default function SelectFilePost({ onFileSelect }) {
             imageElement.addEventListener('load', (e) => {
                 if (error) setError('');
                 const { naturalWidth, naturalHeight } = e.currentTarget;
-                if (naturalWidth < MIN_DIMENSION || naturalHeight < MIN_DIMENSION) {
+                if (naturalWidth < MIN_WIDTH || naturalHeight < MIN_HEIGHT) {
                     setError("Image must be at least 200px in width and height.");
                     setImgSrc('');
                     onFileSelect(null, false);
@@ -76,7 +77,7 @@ export default function SelectFilePost({ onFileSelect }) {
 
     const onImageLoad = (e) => {
         const { width, height } = e.currentTarget; 
-        const cropWidthInPercent = (MIN_DIMENSION / width) * 100;
+        const cropWidthInPercent = (MIN_WIDTH / width) * 100;
         
         const crop = makeAspectCrop(
             {
@@ -112,7 +113,7 @@ export default function SelectFilePost({ onFileSelect }) {
                         onChange={(pixelCrop, percentCrop) => setCrop(percentCrop)}
                         keepSelection={true}
                         aspect={ASPECT_RATIO}
-                        minWidth={MIN_DIMENSION}>
+                        minWidth={MIN_WIDTH}>
                         <img src={imgSrc} alt="Upload" onLoad={onImageLoad} style={{ maxWidth: '100%' }} />
                     </ReactCrop>
                 </div>

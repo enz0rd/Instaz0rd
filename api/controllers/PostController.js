@@ -216,8 +216,8 @@ class PostController {
             if (!user) {
                 return res.status(404).json({ title: "User not found", message: 'The user you are trying to post as does not exist' });
             }
-
             if(req.file) {
+                console.log("teste")
                 let relativeUploadDir;
                 try {
                     relativeUploadDir = path.join(__dirname, '../uploads/users/', `${user.id}`, "Posts");

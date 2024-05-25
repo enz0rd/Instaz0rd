@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import '@/styles/CreateStory.css';
 import PostButton from "./PostButton";
-import SelectFilePost from "./SelectFilePost";
+import SelectFileStory from "./SelectFileStory";
 import { FiPlusCircle } from "react-icons/fi";
 
 export default function CreateStory() {
@@ -38,10 +38,9 @@ export default function CreateStory() {
                     <DialogHeader>
                         <DialogTitle className="text-lg">Create Story</DialogTitle>
                     </DialogHeader>
-                    <img alt="Image" id="img-display" src="/src/images/placeholder-image-story.png" className="self-center object-cover border-2 aspect-story rounded-lg bg-zinc-900" />
                     <div className="flex flex-col gap-3 w-[100%]">
-                        <Label for="select-file">File</Label>
-                        <SelectFilePost onFileSelect={handleFileSelect} />
+                        <Label for="select-file">Select image</Label>
+                        <SelectFileStory onFileSelect={handleFileSelect} />
                         <PostButton type='story' validImage={validImage} fileInput={fileInput}/>
                     </div>
                 </DialogContent>

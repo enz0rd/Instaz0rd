@@ -18,9 +18,9 @@ export default function CreatePost() {
     const [validImage, setValidImage] = useState(false);
     const [fileInput, setFileInput] = useState<File | null>(null);
 
-    const handleFileSelect = (fileInput, validImage) => {
-        setFileInput(fileInput);
-        setValidImage(validImage);
+    const handleFileSelect = (file, valid) => {
+        setFileInput(file);
+        setValidImage(valid);
     };
 
     return (
@@ -38,9 +38,8 @@ export default function CreatePost() {
                     <DialogHeader>
                         <DialogTitle className="text-lg">Create Post</DialogTitle>
                     </DialogHeader>
-                    <img alt="Image" id="img-display" src="/src/images/placeholder-image.png" className="object-cover aspect-square rounded-lg bg-zinc-900" />
                     <div className="flex flex-col gap-3 w-[100%]">
-                        <Label for="select-file">File</Label>
+                        <Label htmlFor="select-file">Select image</Label>
                         <SelectFilePost onFileSelect={handleFileSelect} />
                         <div className="flex flex-col gap-3 mt-2">
                             <Label className="w-[16rem]" htmlFor="description">Description</Label>
