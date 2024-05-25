@@ -95,6 +95,13 @@ class PostController {
         const { valid, email } = await AuthController.verifyToken(req);
         if (valid) {
             try {
+                const userReq = await db.User.findAll({
+                    where: {
+                        email: {
+                            [db.Sequelize.Op.or]: [email]
+                        }
+                    }
+                })
                 const user = await db.User.findAll({ 
                     where: {
                         username: { 
@@ -128,6 +135,9 @@ class PostController {
                 });
                 
                 for (let post of posts) {
+                    if(post.userId == userReq[0].id) {
+                        post.isSelf = true;
+                    }
                     const likes = await db.LikesPosts.findAll({ where: { postId: post.id } });
                     const comments = await db.CommentsPosts.findAll({ where: { postId: post.id } });
                     post.likes = likes.length;
@@ -157,8 +167,6 @@ class PostController {
                     },
                     raw: true,
                 });
-
-                console.log(req.query)
 
                 if(user.length == 0) {
                     return res.status(404).json({ title: "User not found", message: 'The user you are trying to get does not exist' });
@@ -217,7 +225,6 @@ class PostController {
                 return res.status(404).json({ title: "User not found", message: 'The user you are trying to post as does not exist' });
             }
             if(req.file) {
-                console.log("teste")
                 let relativeUploadDir;
                 try {
                     relativeUploadDir = path.join(__dirname, '../uploads/users/', `${user.id}`, "Posts");
@@ -262,6 +269,37 @@ class PostController {
                 }
             }
 
+        } else {
+            return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });
+        }
+    }
+
+    static async deletePost(req, res) {
+        const { valid, email } = await AuthController.verifyToken(req);
+        if(valid) {
+            try {
+                const user = await db.User.findOne({ where: { email: email } });
+                if (!user) {
+                    return res.status(404).json({ title: "User not found", message: 'The user you are trying to delete a post as does not exist' });
+                }
+
+                const post = await db.Post.findOne({ where: { id: req.query.postId } });
+                if (!post) {
+                    return res.status(404).json({ title: "Post not found", message: 'The post you are trying to delete does not exist' });
+                }
+
+                fs.unlinkSync(post.postContent);
+
+                if (user.id !== post.userId) {
+                    return res.status(403).json({ title: "Forbidden", message: 'You are not allowed to delete this post' });
+                }
+
+                const deletePost = await db.Post.destroy({ where: { id: req.query.postId } });
+                return res.status(200).json({ title: "Post deleted", message: 'The post has been deleted' });
+            } catch (error) {
+                console.error('Error deleting post:', error);
+                return res.status(500).json({ title: "Server error", message: 'An error occurred while deleting the post' });
+            }
         } else {
             return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });
         }
@@ -322,7 +360,18 @@ class PostController {
                     ], 
                 });
 
+                const userReq = await db.User.findAll({
+                    where: {
+                        email: {
+                            [db.Sequelize.Op.or]: [email]
+                        }
+                    }
+                })
+
                 for(let comment of comments) {
+                    if(comment.userId == userReq[0].id) {
+                        comment.dataValues.commentIsSelf = true;
+                    }
                     comment.commentsUser.userIcon = comment.commentsUser.userIcon.split('Instaz0rd')[1];
                 }
                 return res.status(200).json(comments);
@@ -366,6 +415,37 @@ class PostController {
             } catch (error) {
                 console.error('Error creating comment:', error);
                 return res.status(500).json({ title: "Server error", message: 'An error occurred while creating the comment' });
+            }
+        } else {
+            return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });
+        }
+    }
+
+    static async deleteComment(req, res) {
+        const { valid, email } = await AuthController.verifyToken(req);
+        if(valid) {
+            try {
+                const user = await db.User.findOne({ where: { email: email } });
+                if (!user) {
+                    return res.status(404).json({ title: "User not found", message: 'The user you are trying to delete a comment as does not exist' });
+                }
+
+                const { commentId } = req.query;
+
+                const comment = await db.CommentsPosts.findOne({ where: { id: commentId } });
+                if (!comment) {
+                    return res.status(404).json({ title: "Comment not found", message: 'The comment you are trying to delete does not exist' });
+                }
+
+                if (user.id !== comment.userId) {
+                    return res.status(403).json({ title: "Forbidden", message: 'You are not allowed to delete this comment' });
+                }
+
+                const deleteComment = await db.CommentsPosts.destroy({ where: { id: commentId } });
+                return res.status(200).json({ title: "Comment deleted", message: 'The comment has been deleted' });
+            } catch (error) {
+                console.error('Error deleting comment:', error);
+                return res.status(500).json({ title: "Server error", message: 'An error occurred while deleting the comment' });
             }
         } else {
             return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });

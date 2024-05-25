@@ -11,8 +11,9 @@ import { Avatar, AvatarImage } from "./ui/avatar";
 import { Skeleton } from "./ui/skeleton";
 import '@/styles/PostActions.css';
 import { Label } from "./ui/label";
+import { FaTrash } from "react-icons/fa";
 
-export default function PostUnitActions({ postUserUsername,postId, likes, comments }) {
+export default function PostUnitActions({ isSelf, postUserUsername,postId, likes, comments }) {
     const [currentLikes, setCurrentLikes] = useState(likes);
     const [currentComments, setCurrentComments] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -103,6 +104,31 @@ export default function PostUnitActions({ postUserUsername,postId, likes, commen
         }
     };
 
+    const handleDeletePost = async () => {
+        try {
+            const resp = await axios.delete(`http://localhost:9000/u/deletePost?postId=${postId}`, { withCredentials: true });
+            if(resp.data.title === "Post deleted") {
+                alert("Post deleted successfully!");
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error("Error deleting post:", error);
+        }
+    };
+
+    const handleDeleteComment = async () => {
+        try {
+            const commentId = currentComments[0].id;
+            const res = await axios.delete(`http://localhost:9000/posts/deleteComment?commentId=${commentId}`, { withCredentials: true });
+            if (res.data.title === "Comment deleted") {
+                const newComments = currentComments.filter(comment => comment.id !== commentId);
+                setCurrentComments(newComments);
+            }
+        } catch (error) {
+            console.error("Error deleting comment:", error);
+        }
+    }
+
     return (
         <div className="flex flex-row items-center justify-around">
             <div onClick={handleLikeClick} className="cursor-pointer flex flex-row items-center gap-2">
@@ -148,6 +174,28 @@ export default function PostUnitActions({ postUserUsername,postId, likes, commen
                                             <small className="text-white col-span-1 text-[.55rem] justify-self-end">{comment.createdAt}</small>
                                             <div className="text-sm col-span-4 text-zinc-200 text-muted-foreground">{comment.comment}</div>
                                         </div>
+                                        {comment.commentIsSelf && (
+                                            <div className="flex items-center justify-center">
+                                                <Dialog>
+                                                    <DialogTrigger>
+                                                        <div className="cursor-pointer flex flex-row items-center gap-2">
+                                                            <FaTrash className="size-[1rem] fill-white hover:scale-[1.5] duration-300" />
+                                                        </div>
+                                                    </DialogTrigger>
+                                                    <DialogContent className="bg-zinc-950 w-[90%] border-[.025em] rounded-lg">
+                                                        <DialogHeader>
+                                                            <DialogTitle>Are you sure?</DialogTitle>
+                                                        </DialogHeader>
+                                                        <DialogDescription>
+                                                            <div className="flex flex-col gap-2">
+                                                                <p>This action cannot be undone!</p>
+                                                                <Button onClick={handleDeleteComment} className="bg-red-600 hover:bg-red-700">Delete</Button>
+                                                            </div>
+                                                        </DialogDescription>
+                                                    </DialogContent>
+                                                </Dialog>
+                                            </div>
+                                        )}
                                     </div>
                                 ))
                             )}
@@ -193,6 +241,26 @@ export default function PostUnitActions({ postUserUsername,postId, likes, commen
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+            {isSelf && (
+                <Dialog>
+                    <DialogTrigger>
+                        <div className="cursor-pointer flex flex-row items-center gap-2">
+                            <FaTrash className="size-[1.5rem] hover:scale-[1.5] duration-300" />
+                        </div>
+                    </DialogTrigger>
+                    <DialogContent className="bg-zinc-950 w-[90%] border-[.025em] rounded-lg">
+                        <DialogHeader>
+                            <DialogTitle>Are you sure?</DialogTitle>
+                        </DialogHeader>
+                        <DialogDescription>
+                            <div className="flex flex-col gap-2">
+                                <p>This action cannot be undone!</p>
+                                <Button onClick={handleDeletePost} className="bg-red-600 hover:bg-red-700">Delete</Button>
+                            </div>
+                        </DialogDescription>
+                    </DialogContent>
+                </Dialog>
+            )}
         </div>
     );
 }

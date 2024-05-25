@@ -51,6 +51,7 @@ export default function UserPosts() {
                 ) : (
                     postsList.map((post, index) => (
                         <PostProfileUnit
+                            isSelf={post.isSelf}
                             postId={post.id}
                             key={index}
                             likes={post.likes}

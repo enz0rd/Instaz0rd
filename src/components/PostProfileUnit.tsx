@@ -14,7 +14,7 @@ import {
 import PostUnitActions from "./PostUnitActions";
 import '@/styles/PostsProfile.css';
 
-export default function PostProfileUnit({ postId, img, description, user, date, likes, comments }) {
+export default function PostProfileUnit({ isSelf, postId, img, description, user, date, likes, comments }) {
     const newDate = new Date(date).toLocaleDateString();
 
     return (
@@ -47,7 +47,7 @@ export default function PostProfileUnit({ postId, img, description, user, date, 
                                 <small>{newDate}</small>
                             </div>
                             <div className="items end mb-5 mt-4">
-                                <PostUnitActions postUserUsername={user} postId={postId} likes={likes} comments={comments} />
+                                <PostUnitActions isSelf={isSelf} postUserUsername={user} postId={postId} likes={likes} comments={comments} />
                             </div>
                         </div>
                     </div>

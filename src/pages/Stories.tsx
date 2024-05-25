@@ -1,6 +1,10 @@
 import Header from "@/components/Header";
+import { Button } from "@/components/ui/button";
+import { DialogHeader } from "@/components/ui/dialog";
+import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { FaTrash } from "react-icons/fa";
 import { FaCircleChevronLeft, FaCircleChevronRight } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 
@@ -41,6 +45,7 @@ export default function Stories() {
                     }
                 });
                 const { stories } = response.data;
+                console.log(stories)
                 stories.forEach(story => {
                     const userIconURL = encodeURIComponent(story.userStories.userIcon)
                     const storyContentURL = encodeURIComponent(story.storyContent);
@@ -48,15 +53,18 @@ export default function Stories() {
                     story.storyContent = `http://localhost:9000/api/getImages?path=${storyContentURL}`;
                     story.createdAt = formatTimeAgo(story.createdAt);
                 });
+                console.log(stories)
                 setStories(stories);
             } catch (error) {
+                if (error.response.status === 404) {
+                    window.location.href = '/404';
+                }
                 console.error('Error fetching stories:', error);
             }
         };
     
         fetchStories();
     }, []);
-    
 
     const handleBackClick = () => {
         setCurrentStoryIndex(prevIndex => Math.max(prevIndex - 1, 0));
@@ -74,6 +82,25 @@ export default function Stories() {
     const handleClose = () => {
         history.back()
     }
+
+    const handleDeleteStory = async () => {
+        try {
+            await axios.delete(`http://localhost:9000/u/deleteStory?storyId=${stories[currentStoryIndex].id}`, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if(stories.length > 1) {
+                window.location.reload();
+            } else {
+                window.location.href = `/u/${parts[2]}`;
+            }
+        } catch (error) {
+            console.error('Error deleting story:', error);
+        }
+
+    };
 
     return (
         <div className="bg-gradient-to-br from-zinc-950 via-zinc-850 to-zinc-950">
@@ -94,8 +121,28 @@ export default function Stories() {
                 <FaCircleChevronLeft onClick={handleBackClick} className="bg-zinc-950 border-zinc-950 border-2 scale-125 rounded-full drop-shadow-lg text-xl cursor-pointer"/>
                 <FaCircleChevronRight onClick={handleForwardClick} className="bg-zinc-950 border-zinc-950 border-2 scale-125 rounded-full drop-shadow-xl text-xl cursor-pointer"/>
             </div>
-            <div className="absolute top-[10%] right-5">
-                <IoClose onClick={handleClose} title="close" className="bg-zinc-950 border-zinc-950 border-2 scale-125 hover:scale-150 duration-300 rounded-full drop-shadow-xl text-xl cursor-pointer"/>
+            <div className="absolute top-[10%] flex flex-row w-[100%] justify-between">
+                <IoClose onClick={handleClose} title="close" className="bg-zinc-950 border-zinc-950 mr-4 border-2 ml-4 scale-125 hover:scale-150 duration-300 rounded-full drop-shadow-xl text-xl cursor-pointer"/>
+                { stories.length > 0 && stories[currentStoryIndex].isSelf && (
+                    <Dialog>
+                        <DialogTrigger>
+                            <div className="cursor-pointer flex flex-row items-center gap-2">
+                                <FaTrash title="delete story" className="bg-zinc-950 border-zinc-950 mr-4 border-2 scale-125 hover:scale-150 duration-300 rounded-full drop-shadow-xl text-xl cursor-pointer"/>
+                            </div>
+                        </DialogTrigger>
+                        <DialogContent className="absolute p-5 w-fit bg-zinc-950 ml-5 border-[.025em] rounded-lg">
+                            <DialogHeader>
+                                <DialogTitle>Are you sure?</DialogTitle>
+                            </DialogHeader>
+                            <DialogDescription>
+                                <div className="flex flex-col gap-2">
+                                    <p>This action cannot be undone!</p>
+                                    <Button onClick={handleDeleteStory} className="bg-red-600 hover:bg-red-700">Delete</Button>
+                                </div>
+                            </DialogDescription>
+                        </DialogContent>
+                    </Dialog>
+                )}
             </div>
         </div>
     );

@@ -7,7 +7,6 @@ export default function SaveProfileIcon({ validImage, fileInput }) {
     const [isLoading, setIsLoading] = useState(false);
 
     async function Save() {
-        console.log(`Válido: ${validImage}, Imagem: ${fileInput}`);
         if (!validImage || !fileInput) {
             alert('Please select a valid image');
             return;

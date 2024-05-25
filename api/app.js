@@ -9,7 +9,7 @@ const port = 9000;
 
 app.use(cors({
     origin: 'http://localhost:5173',
-    methods: ['GET', 'POST', 'PATCH'],
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
   }))
@@ -20,7 +20,18 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '50mb', parameterLimit: 5
 routes(app);
 
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+  console.clear();
+  console.log(`\x1b[32m# Server started! \x1b[0m`);
+  console.log(`\x1b[34m Running on: \x1b[0m`);
+  console.log(`\x1b[33m 
+    Link: http://localhost:${port} \n
+    Date: ${new Date().toLocaleDateString()} 
+    \x1b[0m`);
+  console.log(`\x1b[42m           
+ Enjoy!    
+ By enz0rd 
+           \x1b[0m`,);
+  
 });
 
 module.exports = app;

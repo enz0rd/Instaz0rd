@@ -16,7 +16,6 @@ export default function PostButton({ type, validImage, fileInput }) {
             document.getElementById('post-button').classList.add('cursor-not-allowed', 'opacity-50');
             document.getElementById('post-button').setAttribute('disabled', 'true');
             try {
-                console.log(formData)
                 await axios.post('http://localhost:9000/u/createStory', formData, {
                     withCredentials: true,
                     headers: {
@@ -55,7 +54,6 @@ export default function PostButton({ type, validImage, fileInput }) {
             document.getElementById('post-button').classList.add('cursor-not-allowed', 'opacity-50');
             document.getElementById('post-button').setAttribute('disabled', 'true');
             try {
-                console.log(...formData)
                 await axios.post('http://localhost:9000/u/createPost', formData, {
                     withCredentials: true,
                     headers: {

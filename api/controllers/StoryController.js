@@ -62,11 +62,47 @@ class StoryController {
         }
     }
 
-    static async getStories(req, res) {
+    static async deleteStory(req, res) {
         const { valid, email } = await AuthController.verifyToken(req);
         if(valid) {
+            try {
+                const user = await db.User.findOne({ where: { email: email } });
+                if(!user) {
+                    return res.status(404).json({ title: "User not found", message: 'The user you are trying to delete a story from does not exist' });
+                }
+                
+                const story = await db.Story.findOne({ where: { id: req.query.storyId } });
+                console.log(story)
+                console.log(req.query.storyId)
+                if(!story) {
+                    return res.status(404).json({ title: "Story not found", message: 'The story you are trying to delete does not exist' });
+                }
+                
+                console.log("teste")
+                if(story.userId !== user.id) {
+                    return res.status(403).json({ title: "Forbidden", message: 'You are not allowed to delete this story' });
+                }
+
+                try {
+                    fs.unlinkSync(story.storyContent);
+                    await db.Story.destroy({ where: { id: story.id } });
+                    return res.status(200).json({ title: "Story deleted", message: 'The story has been deleted' });
+                } catch (error) {
+                    return res.status(500).json({ title: "Server error", message: `There was an error: ${error.message}` });
+                }
+            } catch (error) {
+                return res.status(500).json({ title: "Server error", message: `There was an error: ${error.message}` });
+            }
+        } else {
+            return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });
+        }
+    }
+
+    static async getStories(req, res) {
+        const { valid, email } = await AuthController.verifyToken(req);
+        if (valid) {
             const user = await db.User.findOne({ where: { username: req.query.username } });
-            if(!user) {
+            if (!user) {
                 return res.status(404).json({ title: "User not found", message: 'The user you are trying to get stories from does not exist' });
             }
             try {
@@ -86,17 +122,27 @@ class StoryController {
                         }
                     ]
                 });
-
-                if(!stories || stories.length === 0) {
+    
+                const userReq = await db.User.findOne({ where: { email } });
+    
+                if (!stories || stories.length === 0) {
                     return res.status(404).json({ title: "No stories found", message: 'No stories found' });
                 }
-
-                stories.forEach(story => {
-                    story.dataValues.storyContent = story.dataValues.storyContent.split('Instaz0rd')[1];
-                    story.dataValues.userStories.userIcon = story.dataValues.userStories.userIcon.split('Instaz0rd')[1];
+    
+                const updatedStories = stories.map(story => {
+                    const isSelf = story.dataValues.userId === userReq.id;
+                    return {
+                        ...story.dataValues,
+                        isSelf,
+                        storyContent: story.dataValues.storyContent.split('Instaz0rd')[1],
+                        userStories: {
+                            ...story.dataValues.userStories.dataValues,
+                            userIcon: story.dataValues.userStories.userIcon.split('Instaz0rd')[1]
+                        }
+                    };
                 });
-
-                return res.status(200).json({ title: "Stories found", message: 'Stories found', stories: stories });
+    
+                return res.status(200).json({ title: "Stories found", message: 'Stories found', stories: updatedStories });
             } catch (error) {
                 return res.status(500).json({ title: "Server error", message: `There was an error: ${error.message}` });
             }
@@ -104,6 +150,7 @@ class StoryController {
             return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });
         }
     }
+    
 }
 
 module.exports = StoryController;

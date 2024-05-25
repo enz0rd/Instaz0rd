@@ -113,13 +113,13 @@ export default function SelectFilePost({ onFileSelect }) {
                         keepSelection={true}
                         aspect={ASPECT_RATIO}
                         minWidth={MIN_DIMENSION}>
-                        <img src={imgSrc} alt="Upload" onLoad={onImageLoad} style={{ maxWidth: '100%' }} />
+                        <img src={imgSrc} alt="Upload" className="rounded-lg" onLoad={onImageLoad} style={{ maxWidth: '100%' }} />
                     </ReactCrop>
                 </div>
             )}
             {!isCropping && croppedImage && (
                 <div>
-                    <img src={croppedImage} alt="Cropped" style={{ maxWidth: '100%' }} />
+                    <img src={croppedImage} className="rounded-lg" alt="Cropped" style={{ maxWidth: '100%' }} />
                 </div>
             )}
         </div>

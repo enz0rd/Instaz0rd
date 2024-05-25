@@ -12,6 +12,7 @@ const stories = multer({
 router.use(cookieParser());
 
 router.post('/u/createStory', stories.single('storyContent'), StoryController.createStory);
+router.delete('/u/deleteStory', StoryController.deleteStory);
 router.get('/u/getStories', StoryController.getStories);
 
 module.exports = router;
