@@ -19,6 +19,8 @@ import Settings from "./Settings";
 import axios from 'axios';
 import CreateStory from "./CreateStory";
 import { IoMenu } from "react-icons/io5";
+import About from "./About";
+import { MdLogout } from "react-icons/md";
 
 // Lazy-load the CreatePost component
 const CreatePost = React.lazy(() => import("@/components/CreatePost"));
@@ -83,17 +85,17 @@ export default function MenuDrawer() {
                 <Suspense fallback={<div>Loading...</div>}>
                   <CreateStory />
                 </Suspense>
-                {/* <Suspense fallback={<div>Loading...</div>}>
-                  <CreatePost />
-                </Suspense> */}
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-          {/* Wrap the CreatePost component in Suspense */}
           <Suspense fallback={<div>Loading...</div>}>
             <Settings />
           </Suspense>
-          <a href="/logout" className="pl-4 transition hover:ease-in-out duration-300 hover:text-zinc-50 hover:font-bold">Logout</a>
+          <About />          
+          <a href="/logout" className="flex flex-row items-center gap-2 transition hover:ease-in-out duration-300 hover:text-zinc-50 hover:font-bold">
+            <MdLogout />
+            <p>Logout</p>
+          </a>
         </div>
       </SheetContent>
     </Sheet>

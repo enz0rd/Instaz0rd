@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import SignupForm from "@/components/SignupForm";
 import '@/styles/Auth.css'
 
@@ -23,6 +24,7 @@ export default function Login() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

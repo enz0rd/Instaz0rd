@@ -5,9 +5,9 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import SaveProfileIcon from "./SaveProfileIcon";
-import SelectFilePost from "./SelectFilePost";
-import { Button } from "./ui/button";
+import SaveProfileIcon from "@/components/SaveProfileIcon";
+import SelectFilePost from "@/components/SelectFilePost";
+import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
 export default function ChangeProfileImage() {

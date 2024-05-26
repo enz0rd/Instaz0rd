@@ -20,7 +20,7 @@ router.get('/posts/getComments', PostController.getComments);
 router.post('/posts/createComment', PostController.createComment);
 router.delete('/posts/deleteComment', PostController.deleteComment);
 router.get('/posts/fy', PostController.getPostsFY);
-router.get('/posts/friends', PostController.getPostsFriends);
+router.get('/posts/following', PostController.getPostsFollowing);
 
 
 module.exports = router;

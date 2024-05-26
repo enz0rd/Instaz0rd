@@ -42,35 +42,41 @@ class PostController {
         }
     }
 
-    static async getPostsFriends(req, res) {
+    static async getPostsFollowing(req, res) {
         const { valid, email } = await AuthController.verifyToken(req);
         if (valid) {
             try {
-                const friends = await db.Friend.findAll({
+
+                const userReq = await db.User.findOne({ where: { email: email } });
+
+                const followedUsers = await db.Followers.findAll({
                     where: {
                         [db.Sequelize.Op.or]: [
-                            { ownerId: req.query.userId },
-                            { friendId: req.query.userId }
+                            { followerId: userReq.id },
                         ]
                     },
                     include: [
                         {
                             model: db.User,
-                            as: 'owner'
+                            as: 'Follower'
                         },
                         {
                             model: db.User,
-                            as: 'friend'
+                            as: 'Followed'
                         }
                     ]
                 });
 
-                const friendIds = friends.map(friend => friend.ownerId === req.query.userId ? friend.friendId : friend.ownerId);
+                
+                const followedUsersIds = [];
+                followedUsers.forEach(followedUser => {
+                    followedUsersIds.push(followedUser.dataValues.FollowedId);
+                });
 
                 const posts = await db.Post.findAll({
                     where: {
-                        userId: {
-                            [db.Sequelize.Op.in]: friendIds
+                        userId:{ 
+                            [db.Sequelize.Op.in]: followedUsersIds
                         }
                     },
                     include: [
@@ -78,10 +84,32 @@ class PostController {
                             model: db.User,
                             attributes: ['username', 'userIcon']
                         }
-                    ]
+                    ],
+                    order: [['createdAt', 'DESC']],
+                    raw: true,
+                    nest: true
                 });
 
-                return res.status(200).json(resp);
+                for(let post of posts) {
+                    const likes = await db.LikesPosts.findAll({
+                        where: { 
+                            postId: post.id 
+                        } 
+                    });
+                    const comments = await db.CommentsPosts.findAll({
+                        where: { 
+                            postId: post.id 
+                        } 
+                    });
+                    post.likes = likes.length;
+                    post.comments = comments.length;
+                    post.postContent = post.postContent.split('Instaz0rd')[1];
+                    post.User.userIcon = post.User.userIcon.split('Instaz0rd')[1];
+                }
+
+                console.log(posts)
+                
+                return res.status(200).json(posts);
             } catch (error) {
                 console.error('Error getting posts:', error);
                 return res.status(500).json({ title: "Server error", message: 'An error occurred while getting posts' });

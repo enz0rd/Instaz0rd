@@ -14,5 +14,6 @@ router.use(cookieParser());
 router.post('/u/createStory', stories.single('storyContent'), StoryController.createStory);
 router.delete('/u/deleteStory', StoryController.deleteStory);
 router.get('/u/getStories', StoryController.getStories);
+router.get('/u/getStoriesFromFollowedUsers', StoryController.getStoriesFromFollowedUsers);
 
 module.exports = router;

@@ -13,5 +13,6 @@ router.use(cookieParser());
 router.post('/createAccount', AccountController.createAccount);
 router.post('/deleteAccount', AccountController.deleteAccount);
 router.post('/updateAccount', upload.single('userIcon'), AccountController.updateAccount);
+router.post('/u/confirmPassword', AccountController.confirmPassword);
 
 module.exports = router;

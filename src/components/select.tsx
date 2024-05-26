@@ -17,7 +17,7 @@ export function SelectBox({ data = [] }) {
       <SelectTrigger>
         <SelectValue placeholder="Select..." />
       </SelectTrigger>
-      <SelectContent className="bg-zinc-950 dark:bg-white text-zinc-50">
+      <SelectContent className="bg-zinc-950 dark:bg-white text-zinc-50 w-[15rem] h-[20rem] text-wrap">
         {data.map((item) => (
           <SelectItem value={(item.value)}>{(item.label)}</SelectItem>
         ))}

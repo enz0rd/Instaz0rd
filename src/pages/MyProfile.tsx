@@ -4,6 +4,7 @@ import UserProfile from '@/components/UserProfile';
 import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { getCookie } from './Home';
+import Footer from '@/components/Footer';
 
 export default function MyProfile() {
     // Obtém o valor do cookie 'token'
@@ -20,6 +21,7 @@ export default function MyProfile() {
             <Header />
             <UserProfile />
             <UserPosts /> 
+            <Footer />
         </div>
     );
 }

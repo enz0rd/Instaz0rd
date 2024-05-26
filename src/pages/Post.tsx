@@ -4,6 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { getCookie } from "./Home";
+import Footer from "@/components/Footer";
 
 export default function Post() {
     const currentUrl = window.location.href;
@@ -112,6 +113,7 @@ export default function Post() {
                     </div>
                 </div>
             )}
+            <Footer />
         </div>
     )
 }

@@ -76,17 +76,11 @@ export default function UpdateProfile() {
     });
 
     function resetPassword() {
-        const confirmDialog = confirm('Are you sure you want to reset your password?');
-        if (confirmDialog) {
-            console.log("Reset password");
-        }
+        window.location.href = `/u/${userData.username}/resetPassword`;
     }
 
     function changeCountry() {
-        const confirmDialog = confirm('Are you sure you want to change your country?');
-        if (confirmDialog) {
-            console.log("Change country");
-        }
+        window.location.href = `/u/${userData.username}/changeCountry`;
     }
 
     const form = useForm({

@@ -22,7 +22,7 @@ class AccountController {
                     username: username,
                     name: name,
                     email: email,
-                    password: atob(password),
+                    password: btoa(password),
                     userIcon: imagePath,
                     phonenum: phonenum,
                     countryFrom: countryFrom
@@ -123,7 +123,7 @@ class AccountController {
                         await db.User.update({
                             username: username ? username : user.username,
                             name: name ? name : user.name,
-                            password: password ? atob(password) : user.password,
+                            password: password ? btoa(password) : user.password,
                             phonenum: phonenum ? phonenum : user.phonenum,
                             bio: bio ? bio : user.bio,
                             countryFrom: countryFrom ? countryFrom : user.countryFrom
@@ -155,6 +155,28 @@ class AccountController {
         }
     }
     
+    static async confirmPassword(req, res) {
+        try {
+            const { valid, email } = await AuthController.verifyToken(req);
+            if (valid) {
+                const { password } = req.body;
+                const user = await db.User.findOne({ where: { email: email, active: 1 } });
+                if (!user) {
+                    return res.status(404).json({ title: "User not found", message: 'The user you are trying to confirm the password does not exist' });
+                }
+                
+                if (user.password == btoa(password)) {
+                    return res.status(200).json({ confirmed: true });
+                } else {
+                    return res.status(401).json({ confirmed: false });
+                }
+            } else {
+                return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });
+            }
+        } catch (error) {
+            return res.status(500).json({ title: "Error", message: `${error.message}` });
+        }
+    }
 }
 
 async function readFileAndConvertToBlob(filePath) {

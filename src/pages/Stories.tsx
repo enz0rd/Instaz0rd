@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { DialogHeader } from "@/components/ui/dialog";
@@ -144,6 +145,7 @@ export default function Stories() {
                     </Dialog>
                 )}
             </div>
+            <Footer />
         </div>
     );
 }

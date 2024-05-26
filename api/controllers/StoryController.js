@@ -151,6 +151,72 @@ class StoryController {
         }
     }
     
+    static async getStoriesFromFollowedUsers(req, res) {
+        const { valid, email } = await AuthController.verifyToken(req);
+        if (valid) {
+            const user = await db.User.findOne({ 
+                where: { 
+                    email: {
+                        [db.Sequelize.Op.eq]: email
+                    } 
+                } 
+            });
+            if (!user) {
+                return res.status(404).json({ title: "User not found", message: 'The user you are trying to get stories from does not exist' });
+            }
+            try {
+                const followedUsers = await db.Followers.findAll({ where: { followerId: user.dataValues.id } });
+                if (!followedUsers || followedUsers.length === 0) {
+                    return res.status(404).json({ title: "No followed users found", message: 'No followed users found' });
+                }
+                const followedUsersIds = [];
+                followedUsers.forEach(followedUser => {
+                    followedUsersIds.push(followedUser.dataValues.FollowedId);
+                });
+
+                const usersWithStories = await db.Story.findAll({
+                    attributes: ['userId'],
+                    group: ['userId'],
+                    where: { 
+                        userId: {
+                            [db.Sequelize.Op.in]: followedUsersIds
+                        }, 
+                        createdAt: {
+                            [db.Sequelize.Op.gt]: new Date(new Date().setDate(new Date().getDate() - 1))
+                        }
+                    },
+                    order: [['createdAt', 'ASC']],
+                    include: [
+                        {
+                            model: db.User,
+                            as: 'userStories',
+                            attributes: ['id', 'username', 'userIcon']
+                        }
+                    ]
+                });
+
+                if (!usersWithStories || usersWithStories.length === 0) {
+                    return res.status(404).json({ title: "No stories found", message: 'No stories found' });
+                }
+    
+                const updatedStories = usersWithStories.map(story => {
+                    return {
+                        userStories: {
+                            ...story.dataValues.userStories.dataValues,
+                            userIcon: story.dataValues.userStories.userIcon.split('Instaz0rd')[1]
+                        }
+                    };
+                });
+    
+                return res.status(200).json({ usersWithStories: updatedStories });
+            } catch (error) {
+                return res.status(500).json({ title: "Server error", message: `There was an error: ${error.message}` });
+            }
+        } else {
+            return res.status(401).json({ title: "Unauthorized", message: "Invalid token" });
+        }
+    }
+    
 }
 
 module.exports = StoryController;

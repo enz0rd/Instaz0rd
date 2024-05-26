@@ -227,7 +227,7 @@ export default function PostUnitActions({ isSelf, postUserUsername,postId, likes
                         </Label>
                         <Input
                         id="link"
-                        defaultValue={`${parts[0]}//${parts[2]}/${parts[3]}/${postUserUsername}/${postId}`}
+                        defaultValue={`${parts[0]}//${parts[2]}/u/${postUserUsername}/${postId}`}
                         readOnly
                         />
                     </div>
