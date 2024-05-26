@@ -5,6 +5,8 @@ import FollowingPosts from "@/components/homepage/FollowingPosts";
 import { FaRegCompass } from "react-icons/fa";
 import { FaUserFriends } from "react-icons/fa";
 import Footer from "@/components/Footer";
+import ExplorePosts from "@/components/homepage/ExplorePosts";
+import YouMayKnow from "@/components/homepage/YouMayKnow";
 
 export const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -30,6 +32,7 @@ export default function Home() {
                 <h1 className="text-md font-bold">Welcome to Instaz0rd</h1>
                 <small className="text-xs">making your social life simpler.</small>
             </div>
+           <YouMayKnow />
             <div className="flex flex-col items-center lg:ml-[30%] lg:mr-[30%] w-70% p-4 h-screen mt-[3rem]">
                 <FollowingStories />
                 <div className="mt-[1rem] w-[100%] flex flex-col items-center">
@@ -45,10 +48,7 @@ export default function Home() {
                         </TabsTrigger>
                     </TabsList>
                     <TabsContent value="explore">
-                        <div className="flex flex-row gap-4 pb-2 w-[100%] border-b-[.025em] items-center justify-center">
-                            <FaRegCompass className="scale-150"/>
-                            <h1 className="font-bold text-2xl">Explore</h1>
-                        </div>
+                        <ExplorePosts />
                     </TabsContent>
                     <TabsContent value="following">
                         <FollowingPosts />

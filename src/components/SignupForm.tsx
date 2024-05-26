@@ -24,6 +24,8 @@ const formSchema = (countries) => z.object({
   }),
   username: z.string().min(2, {
     message: "Username must be at least 2 characters long.",
+  }).regex(/^[a-zA-Z0-9._]+$/, {
+    message: "Username can only contain letters, numbers, underscores, and periods.",
   }),
   name: z.string().min(3, {
     message: "User's Name must be at least 3 characters long.",

@@ -52,6 +52,36 @@ class UtilsController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  static async randomUsersWithFollowers(req, res) {
+    const { valid, email } = await AuthController.verifyToken(req);
+    if(valid) {
+      try {
+        const users = await db.User.findAll({
+          where: { email: { [db.Sequelize.Op.ne]: email } },
+          order: db.Sequelize.literal('rand()'),
+          limit: 10,
+          attributes: ['id', 'username', 'name', 'userIcon'],
+          raw: true
+        });
+
+        for(let user of users) {
+          user.userIcon = user.userIcon.split(`Instaz0rd`)[1];
+          const followers = await db.Followers.findAll({
+            where: { followedId: user.id },
+            attributes: ['followerId'],
+          });
+          user.followers = followers.length;
+        }
+
+        res.status(200).json(users);
+      } catch (error) {
+        res.status(500).json({ title:"Error:", message: `There was an error fetching users: ${error.message}` });
+      }
+    } else {
+      return res.status(401).json({ title: "Unauthorized", message: 'You are not logged in' });
+    }
+  }
 }
 
 module.exports = UtilsController;

@@ -3,14 +3,14 @@ import { useEffect, useState } from "react"
 import PostHome from "./PostHome"
 
 
-export default function FollowingPosts() {
+export default function ExplorePosts() {
     const [Posts, setPosts] = useState([])
     const [Message, setMessage] = useState({ type: '', title: '', message: '', isVisible: false})
     const [Loading, setLoading] = useState(true)
 
 
     useEffect(() => {
-        axios.get('http://localhost:9000/posts/following', {
+        axios.get('http://localhost:9000/posts/explore', {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json"
@@ -25,9 +25,6 @@ export default function FollowingPosts() {
         })
         .catch((err) => {
             console.error(err)
-            setTimeout(() => {
-                setLoading(false);
-            }, 5000);
             setMessage({ type: 'error', title: "Oops, an error occurred", message: 'An error occurred while fetching posts. Please try again later', isVisible: true})
         })
 
@@ -50,7 +47,7 @@ export default function FollowingPosts() {
             ) : Posts.length === 0 ? (
                 <div className="p-2 border-zinc-50 border-[.025em] m-4 rounded-xl">
                     <h1 className="text-xl font-bold">No posts found</h1>
-                    <div className="text-zinc-300">No posts found from your friends. Try following more people.</div>
+                    <div className="text-zinc-300">No posts found. Try again later.</div>
                 </div>
             ) : (
                 <div className="flex flex-col justify-center mx-auto lg:w-[70%] md:w-[80%] sm:w-full gap-3 *:aspect-square">
@@ -59,7 +56,7 @@ export default function FollowingPosts() {
                     ))}
                     <div className="flex flex-col justify-center items-center">
                         <h1 className="font-bold text-xl">That's all!</h1>
-                        <p>Want to see more? Follow more people!</p>
+                        <p>for now...</p>
                     </div>
                 </div>
             )}

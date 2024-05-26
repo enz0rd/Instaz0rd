@@ -39,8 +39,8 @@ export default function UserPosts() {
 
     return (
         <div id="display-posts" className="flex flex-col w-full mt-5 items-center">
-            <h1 className="w-3/5 font-bold text-xl">Posts</h1>
-            <div id='scrollareaPosts' className="w-3/5 grid grid-cols-3 gap-3 mt-2 border-t-2 rounded-xl p-2 mb-10">
+            <h1 className="w-3/6 font-bold text-xl">Posts</h1>
+            <div id='scrollareaPosts' className="w-3/6 grid grid-cols-3 gap-3 mt-2 border-t-2 rounded-xl p-2 mb-10">
                 {loading ? (
                     renderSkeletons()
                 ) : postsList.length === 0 ? (

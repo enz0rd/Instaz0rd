@@ -172,7 +172,7 @@ export default function PostUnitActions({ isSelf, postUserUsername,postId, likes
                                         <div className="grid w-[100%] grid-cols-5">
                                             <h4 className="font-bold leading-none col-span-4 text-white">@{comment.User.username}</h4>
                                             <small className="text-white col-span-1 text-[.55rem] justify-self-end">{comment.createdAt}</small>
-                                            <div className="text-sm col-span-4 text-zinc-200 text-muted-foreground">{comment.comment}</div>
+                                            <div className="text-sm col-span-4 text-balance break-words text-zinc-200 text-muted-foreground">{comment.comment}</div>
                                         </div>
                                         {comment.commentIsSelf && (
                                             <div className="flex items-center justify-center">

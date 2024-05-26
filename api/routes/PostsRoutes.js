@@ -19,7 +19,7 @@ router.post('/u/likePost', PostController.likePost);
 router.get('/posts/getComments', PostController.getComments);
 router.post('/posts/createComment', PostController.createComment);
 router.delete('/posts/deleteComment', PostController.deleteComment);
-router.get('/posts/fy', PostController.getPostsFY);
+router.get('/posts/explore', PostController.getPostsExplore);
 router.get('/posts/following', PostController.getPostsFollowing);
 
 

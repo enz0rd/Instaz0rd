@@ -31,35 +31,22 @@ import ChangeProfileImage from "./ChangeProfileImage";
 const formSchema = (formData: any) => z.object({
     username: z.string().min(2, {
         message: "Username must be at least 2 characters long.",
-    }),
+    }).regex(/^[a-zA-Z0-9._]+$/, {
+        message: "Username can only contain letters, numbers, underscores, and periods.",
+      }),
     name: z.string().min(3, {
         message: "Name must be at least 3 characters long.",
+    }).regex(/^[a-zA-Z0-9\s]+$/, {
+        message: "Name can only contain letters, numbers, and spaces, without special characters.",
     }),
     bio: z.string().optional(),
     phonenum: z.string().min(11, {
         message: "Phone number must be at least 11 characters long.",
-    }),
+    }).regex(/^\d+$/, { message: "Phone number must contain only numbers." }),
 });
 
 export default function UpdateProfile() {
     const [alert, setAlert] = useState({ title: '', message: '', isVisible: false });
-
-    useEffect(() => {
-        const userIconPath = localStorage.getItem('userIcon');
-        if (userIconPath) {
-            axios.get(`http://localhost:9000/api/getImages?path=${encodeURIComponent(userIconPath)}`, {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            }).then((response) => {
-                const imageUrl = `http://localhost:9000/api/getImages?path=${encodeURIComponent(userIconPath)}`;
-                setUserImage(imageUrl);
-            }).catch((error) => {
-                console.error("Error loading user image:", error);
-            });
-        }
-    }, []);
 
     let userData: any = '';
     if (getCookie('user')?.startsWith('j%3A')) {
@@ -101,12 +88,12 @@ export default function UpdateProfile() {
             }
         })
             .then((response) => {
-                alert('Account updated successfully.');
+                setAlert({ title: "Success", message: 'Account updated successfully.', isVisible: true});
                 setTimeout(() => { window.location.reload() }, 2000);
             })
             .catch((err) => {
-                console.log('Error updating account:', err.response.data);
-                alert('Failed to update account. ' + err.response.data.message || 'Please try again later');
+                console.log('Error updating account:', err);
+                setAlert({ title: "Error", message: 'Failed to update account. ' + err.response.data.message || 'Please try again later', isVisible: true});
             });
     }
 
@@ -160,6 +147,7 @@ export default function UpdateProfile() {
                                             <FormControl>
                                                 <Textarea placeholder="Enter your bio" {...field} maxLength={255} />
                                             </FormControl>
+                                            <FormMessage />
                                         </FormItem>
                                     )}
                                 />
@@ -172,6 +160,7 @@ export default function UpdateProfile() {
                                             <FormControl>
                                                 <Input type="tel" placeholder="1212341234" {...field} />
                                             </FormControl>
+                                            <FormMessage />
                                         </FormItem>
                                     )}
                                 />

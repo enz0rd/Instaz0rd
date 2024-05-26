@@ -43,7 +43,7 @@ export default function PostProfileUnit({ isSelf, postId, img, description, user
                                 <a href={`/u/${user}`} className="text-white">
                                     <h1 className="font-bold text-lg text-white">@{user}</h1>
                                 </a>
-                                <p>{description}</p>
+                                <p className="break-all">{description}</p>
                                 <small>{newDate}</small>
                             </div>
                             <div className="items end mb-5 mt-4">

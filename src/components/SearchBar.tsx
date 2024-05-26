@@ -75,7 +75,7 @@ export default function SearchBar() {
                 <PopoverTrigger asChild>
                     <div />
                 </PopoverTrigger>
-                <PopoverContent className="w-full max-h-[300px] overflow-auto rounded-md border border-zinc-300 bg-zinc-950 p-2 shadow-lg dark:border-zinc-700 dark:bg-zinc-800">
+                <PopoverContent className="w-[120%] max-h-[300px] overflow-auto rounded-md border border-zinc-300 bg-zinc-950 p-2 shadow-lg dark:border-zinc-700 dark:bg-zinc-800">
                     <ScrollArea>
                         <div className="space-y-1">
                             {loading ? (

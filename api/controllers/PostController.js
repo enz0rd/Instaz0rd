@@ -4,33 +4,40 @@ const fs = require('fs');
 const path = require('path');
 
 class PostController {
-    static async getPostsFY(req, res) {
+    static async getPostsExplore(req, res) {
         const { valid, email } = await AuthController.verifyToken(req);
         if (valid) {
             try {
-                const fromCountry = await db.User.findAll({
-                    attributes: ['id'],
-                    where: {
-                        country: req.query.country
-                    },
-                });
-
-                const usersFromCountry = fromCountry.map(user => user.id);
+                const userReq = await db.User.findOne({ where: { email: email } });
 
                 const posts = await db.Post.findAll({
-                    where: {
-                        userId: {
-                            [db.Sequelize.Op.in]: usersFromCountry
-                        }
-                    },
                     include: [
                         {
                             model: db.User,
                             attributes: ['username', 'userIcon']
                         }
                     ],
-                    limit: 10
+                    order: [['createdAt', 'DESC']],
+                    raw: true,
+                    nest: true
                 });
+
+                for(let post of posts) {
+                    const likes = await db.LikesPosts.findAll({
+                        where: { 
+                            postId: post.id 
+                        } 
+                    });
+                    const comments = await db.CommentsPosts.findAll({
+                        where: { 
+                            postId: post.id 
+                        } 
+                    });
+                    post.likes = likes.length;
+                    post.comments = comments.length;
+                    post.postContent = post.postContent.split('Instaz0rd')[1];
+                    post.User.userIcon = post.User.userIcon.split('Instaz0rd')[1];
+                }
 
                 return res.status(200).json(posts);
             } catch (error) {
@@ -107,8 +114,6 @@ class PostController {
                     post.User.userIcon = post.User.userIcon.split('Instaz0rd')[1];
                 }
 
-                console.log(posts)
-                
                 return res.status(200).json(posts);
             } catch (error) {
                 console.error('Error getting posts:', error);
@@ -316,13 +321,16 @@ class PostController {
                     return res.status(404).json({ title: "Post not found", message: 'The post you are trying to delete does not exist' });
                 }
 
-                fs.unlinkSync(post.postContent);
-
+                
                 if (user.id !== post.userId) {
                     return res.status(403).json({ title: "Forbidden", message: 'You are not allowed to delete this post' });
                 }
+                
+                await db.CommentsPosts.destroy({ where: { postId: post.id } });
+                await db.LikesPosts.destroy({ where: { postId: post.id } });
 
-                const deletePost = await db.Post.destroy({ where: { id: req.query.postId } });
+                await db.Post.destroy({ where: { id: req.query.postId } });
+                fs.unlinkSync(post.postContent);
                 return res.status(200).json({ title: "Post deleted", message: 'The post has been deleted' });
             } catch (error) {
                 console.error('Error deleting post:', error);
