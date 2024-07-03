@@ -1,4 +1,4 @@
-# Instaz0rd - Project Documentation
+# Instaz0rd - Make your social life easier
 
 **Instaz0rd** is a social network inspired by Instagram, developed by [enz0rd](https://github.com/enz0rd/instaz0rd). This project is a web platform that allows users to share memories and interact with others.
 
