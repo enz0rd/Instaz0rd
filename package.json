@@ -6,7 +6,9 @@
   "scripts": {
     "api-dev": "nodemon ./api/app.js",
     "api": "node ./api/app.js",
+    "createdb": "cd ./api && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
     "dev": "vite",
+    "start-api": "npm run createdb && npm run api-dev",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
